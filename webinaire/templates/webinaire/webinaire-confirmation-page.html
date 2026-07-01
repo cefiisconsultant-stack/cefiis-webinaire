@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    {% include "marketing_head_snippet.html" %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation d'Inscription - Webinaire Consultation </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'webinaire/css/webinaire-confirmation-page.css' %}"/>
+</head>
+<body>
+    {% include "marketing_body_snippet.html" %}
+    <header>
+        <div class="container">
+            <div class="confirmation-icon">
+                <i class="fas fa-check check-icon"></i>
+            </div>
+            <h1>Félicitations !</h1>
+            <h2>Votre inscription au webinaire est confirmée</h2>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="confirmation-content">
+            <div class="webinar-details">
+                <div class="date-time">
+                    <h3>À retenir !!</h3>
+                    <div class="date-display">Le 11 Octobre</div>
+                    <div class="time-display">16 h 00</div>
+                    <div class="duration"> <span class="UneHeure"> Durée : 1 h</span> <span class="point"> • En ligne </span></div>
+                </div>
+
+                <div class="instructions">
+                    <h3>Pour participer</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Lien de connexion</h4>
+                            <p>Vous recevrez un email avec le lien direct 24h avant le webinaire.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Connexion</h4>
+                            <p>Rejoignez 10 minutes avant le début. Aucune installation requise.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Interaction</h4>
+                            <p>Préparez vos questions pour la session de questions-réponses.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support">
+                <h3>Une question ?</h3>
+                <p> Rejoignez dès maintenant <a href="https://chat.whatsapp.com/IJi96yhLhyYJjOPtWFKwtN" class="support-email" target="_blank"> la communauté des consultants sur WhatsApp ! </a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton WSP flottant -->
+    <a href="https://chat.whatsapp.com/IJi96yhLhyYJjOPtWFKwtN" 
+    class="whatsapp-float" 
+    target="_blank">
+    <i class="fab fa-whatsapp"></i> Rejoindre la communauté
+    </a>
+
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Cefiis-IDH • Tous droits réservés</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

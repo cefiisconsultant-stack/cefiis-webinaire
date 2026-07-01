@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    {% include "marketing_head_snippet.html" %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenez Consultant - Webinaire Gratuit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'webinaire/css/webinaire-pre-frame-bridge-1.css' %}"/>
+</head>
+<body>
+    {% include "marketing_body_snippet.html" %}
+    <div class="container">
+        <header>
+            <h1>Transformez votre expertise en une activité de consultation rentable</h1>
+            <p class="subtitle">Découvrez pourquoi 2025 est l'année idéale pour devenir consultant</p>
+        </header>
+
+        <main class="content">
+            <section>
+                <p>Le monde du travail a profondément évolué ces dernières années.</p>
+                <p>Aujourd’hui, les entreprises veulent aller vite et éviter les erreurs coûteuses. Elles s’appuient sur des consultants capables de transformer leurs résultats grâce à des solutions concrètes et mesurables.</p>
+                
+                <div class="highlight">
+                    <p>👉 <span class="black-span"> Résultat </span>: en <span class="black-span"> 2025</span>, le marché de la consultation atteint un niveau record, avec une demande estimée à plus de<span class="blue-span"> 2 400 milliards FCFA en Afrique </span> selon la <cite class="MI"> <abbr title="Modor Intelligence"> MI. </abbr> </cite></p>
+                </div>
+                
+                <p>Pourquoi ce <span class="black-span"> boom </span> ? Parce qu'une vérité s'impose :</p>
+                
+                <div class="highlight">
+                    <p>👉 <span class="black-span"> Les entreprises paient pour des solutions concrètes, pas pour des diplômes </span> — et c’est là qu’intervient le consultant.</p>
+                </div>
+
+                <div class="highlight">
+                    <p>La question n'est donc plus : <em> " <span class="black-span" > Y a-t-il de la place pour moi ? </span>"</em><br>
+                    La vraie question est : 
+                    👉 <em>" <span class="black-span"> Comment profiter dès maintenant de cette opportunité avant la saturation du Marché ? </span> "</em></p>
+                </div>
+                
+                <p>C'est précisément ce que nous allons explorer dans ce webinaire.</p>
+                
+                <div class="mini-cta fade-in">
+                    <p class="mini-cta-title">Je veux découvrir comment transformer mon expertise en revenus</p>
+                    <button onclick="window.location.href='{% url 'webinaire-reservation-page' %}'" class="mini-cta-button wave-effect">Inscrivez-vous gratuitement au Webinaire</button>
+                </div>
+            </section>
+
+
+            <section>
+                <h2>🚫 3 croyances qui vous empêchent (à tort) de devenir consultant</h2>
+                
+                <ul class="beliefs-list">
+                    <li><strong>"Il faut 20 ans d'expérience pour être crédible."</strong><br>
+                    👉 Faux : maîtriser une compétence utile suffit pour apporter de la valeur.</li>
+                    
+                    <li><strong>"Il faut un grand réseau pour se lancer."</strong><br>
+                    👉 Avec les bonnes stratégies, vous pouvez trouver vos premiers clients sans carnet d’adresses.</li>
+                    
+                    <li><strong>"Se lancer comme consultant, c'est risqué."</strong><br>
+                    👉 Le vrai risque, c’est de rester dépendant d’un emploi instable. La consultation vous redonne le contrôle.</li>
+                    
+                    {% comment %} <div class="dropdown-beliefs">
+                        <button class="dropdown-toggle" onclick="toggleDropdown()">
+                            Voir les 2 croyances suivantes <span class="arrow">▼</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <li><strong>Croyance n°4 : "Se lancer comme consultant, c'est risqué."</strong><br>
+                            👉 Le vrai risque aujourd'hui, c'est de rester dépendant d'un emploi instable. La consultation, elle, vous donne indépendance et maîtrise de votre trajectoire professionnelle.</li>
+                            
+                            <li><strong>Croyance n°5 : "La consultation est réservée aux experts ultra-spécialisés ou aux grands cabinets."</strong><br>
+                            👉 Les PME recherchent avant tout des solutions pratiques, rapides et accessibles. Votre valeur ne dépend pas de la taille de votre cabinet, mais de la clarté avec laquelle vous résolvez un problème.</li>
+                        </div>
+                    </div> {% endcomment %}
+                </ul>
+                
+                <div class="mini-cta fade-in">
+                    <p class="mini-cta-title"> Si vous avez déjà eu/avez l'une de ces croyances ?</p>
+                    <button onclick="window.location.href='{% url 'webinaire-reservation-page' %}'" class="mini-cta-button wave-effect"> Je débloque mon potentiel de consultant</button>
+                </div>
+            </section>
+
+            <section>
+                <h2>L'histoire de Jonas: du doute à la liberté</h2>
+                
+                <div class="testimonial">
+                    <p> <span class="bold-and-black"> Jonas</span>, 42 ans, pensait que la consultation était réservée aux grands cabinets. Pourtant, après 15 ans en entreprise, il se sentait coincé : <span class="bold-and-black"> peu reconnu, proche de sa fin de carrière, et convaincu de ne pas profiter pleinement de son expertise</span>. </p>
+                    
+                    <p>Le déclic ? Comprendre qu’il pouvait transformer son savoir-faire en <strong>solutions concrètes pour les entreprises</strong>. En clarifiant son positionnement et en structurant son offre :</p>
+                    
+                    <ul>
+                        <li>Il a trouvé ses premiers clients en quelques semaines</li>
+                        <li>Il a retrouvé une <strong>liberté totale sur son emploi du temps</strong></li>
+                        <li>Ses revenus ont dépassé ce qu’il pensait possible en salarié</li>
+                    </ul>
+                    
+                    <p>Aujourd’hui, Jonas n’est plus prisonnier d’un poste. Il est reconnu et payé pour ce qu’il sait vraiment faire.</p>
+                </div>
+                
+                <div class="mini-cta fade-in">
+                    <p class="mini-cta-title">Comme Jonas, vous pouvez transformer votre expertise en liberté.</p>
+                    <button onclick="window.location.href='{% url 'webinaire-reservation-page' %}'" class="mini-cta-button wave-effect">Je réserve ma place au webinaire maintenant</button>
+                </div>
+            </section>
+
+
+
+            {% comment %} <section>
+                <div class="highlight">
+                    <p>✨ Si vous avez une expertise à valoriser,<br>
+                    ✨ Si vous souhaitez gagner en liberté financière et en autonomie,<br>
+                    ✨ Si vous envisagez une reconversion,<br>
+                    ✨ Ou si vous aspirez à plus qu'un emploi de routine…</p>
+                    <p>Alors ce webinaire est fait pour vous.</p>
+                </div>
+            </section> {% endcomment %}
+
+            {% comment %} <section class="cta-section">
+                <h2 class="cta-title">Prêt à transformer votre expertise ?</h2>
+                <p>Inscrivez-vous maintenant à notre webinaire gratuit</p>
+                <button onclick="window.location.href='{% url 'webinaire-reservation-page' %}'" class="cta-button wave-effect">Je réserve ma place</button>
+            </section> {% endcomment %}
+        </main>
+
+        <footer>
+            <p>© 2025 - Votre inscription est 100% gratuite, sans engagement </p>
+        </footer>
+    </div>
+
+    <div class="floating-cta">
+        <button onclick="window.location.href='{% url 'webinaire-reservation-page' %}'" class="floating-cta-button wave-effect">Places limitées !!!</button>
+    </div>
+    <script src="{% static 'webinaire/js/webinaire-pre-frame-bridge-1.js' %}"></script>
+</body>
+</html>
+
+{% comment %} <> {% endcomment %}

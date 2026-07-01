@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+     {% include "marketing_head_snippet.html" %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webinaire Consultation - Stratégies Modernes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'webinaire/css/webinaire-reservation-page.css' %}"/>
+</head>
+<body>
+    {% include "marketing_body_snippet.html" %}
+    <header>
+        <div class="container">
+            <h1> <span style="color: #ca0002;"> Webinaire Exclusif</span> : Transformez vos compétences en revenus concrets comme consultant Indépendant </h1>
+            {% comment %} <h2>Apprenez à décrocher vos premiers clients et générer vos premiers revenus dès votre lancement </h2> {% endcomment %}
+
+            <!-- Badge "+500 inscrits" ajouté ici -->
+            <div class="enrolled-badge">
+                <i class="fas fa-users"></i> +500 personnes déjà inscrites !
+            </div>
+            
+            <div class="countdown">
+                <div class="countdown-title">Le webinaire commence dans :</div>
+                <div class="countdown-timer">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-label">Jours</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-label">Heures</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-label">Secondes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container main-content">
+        <div class="content-left">
+            <section class="presentation">
+                <div class="presentation-content">
+                    <div class="photo-container">
+                        <div class="photo">
+                            <img src="{% static 'webinaire/image/photo.jpg' %}" alt="Photo de l'animateur">
+                        </div>
+                         {% comment %} <div class="photo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                            </svg>
+                        </div> {% endcomment %}
+                    </div>
+                    <div class="presentation-text highlight-animation">
+                        <h3> Animateur </h3>
+
+                        {% comment %} 👋 Étienne GBEDAGBE est consultant, formateur et fondateur de Cefiis-IDH.
+
+                        Depuis plus de 10 ans, il accompagne les entreprises et les particuliers dans la consultation et la gestion des ressources humaines. {% endcomment %}
+
+                        <p>👋 Je m'appelle <strong>Étienne GBEDAGBE</strong>, consultant, formateur et fondateur de <strong>Cefiis-IDH</strong>.</p>
+                        <p>Depuis plus de 10 ans, j'accompagne les entreprises et particuliers en tant qu'expert consultant</p>
+                        <div class="highlights">
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span>J'ai généré plus de <span class="color-red"> 40 millions FCFA</span> grâce à mes missions de consultation.</span>
+                            </div>
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span>J'ai construit une <span class="color-red"> communauté de 500+ aspirants </span> consultants.</span>
+                            </div>
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span>J'ai formé et accompagné plus de <span class="color-red">100 professionnels </span> à se lancer avec succès.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="content-right">
+            <section class="form-section">
+            <div class="limited-spots" id="remaining-spots">
+                <i class="fas fa-exclamation-circle"></i> Seulement <span id="spots-count">8</span> places restantes !
+            </div>
+                <h3>Inscrivez-vous gratuitement</h3>
+                <form id="webinar-form">
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="prenom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profession">Profession</label>
+                        <input type="text" id="profession" name="profession" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Niveau d'étude</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" id="bac5" name="niveau_etude" value="BAC+5" required>
+                                <span class="radio-label">BAC+5</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="bac3" name="niveau_etude" value="BAC+3">
+                                <span class="radio-label">BAC+3</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="bac7" name="niveau_etude" value="BAC+7">
+                                <span class="radio-label">BAC+7</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="etudiant" name="niveau_etude" value="Etudiant">
+                                <span class="radio-label">Étudiant</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-check-circle"></i> Je réserve ma place maintenant
+                    </button>
+                </form>
+                <p class="reassurance-text">
+                    Inscrivez-vous gratuitement dès maintenant – votre place est réservée en 1 clic !
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <section class="learning-section">
+        <div class="learning-content">
+            <h3>Ce que vous apprendrez lors de ce webinaire</h3>
+            <ul class="learning-list">
+                <li class="learning-item">
+                    <span class="learning-icon">✓</span>
+                    <span class="bold">Transformer votre expertise en revenus</span>
+                </li>
+                <li class="learning-item">
+                    <span class="learning-icon">✓</span>
+                    <span class="bold">Trouver vos premiers clients sans réseau</span>
+                </li>
+                <li class="learning-item">
+                    <span class="learning-icon">✓</span>
+                    <span class="bold">Structurer une offre irrésistible et crédible</span>
+                </li>
+                <li class="learning-item">
+                    <span class="learning-icon">✓</span>
+                    <span class="bold">Profiter de la croissance du marché du conseil</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>⚡ Les places sont limitées ! Inscrivez-vous dès maintenant et recevez votre lien de connexion par email.</p>
+        </div>
+    </footer>
+    <script src="{% static 'webinaire/js/webinaire-reservation-page.js' %}"></script>
+</body>
+</html>
+
