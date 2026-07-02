@@ -30,15 +30,20 @@ def webinaire_confirmation(request):
 def send_webinaire_confirmation_email(reservation):
     """Envoie l'email de confirmation d'inscription au webinaire"""
     try:
+        # Construire un nom complet propre
+        if reservation.nom and reservation.nom != "Anonyme":
+            full_name = f"{reservation.prenom} {reservation.nom}"
+        else:
+            full_name = reservation.prenom
+
         html_content = render_to_string("webinaire/email_inscription_webinaire.html", {
-            "firstname": reservation.prenom,
-            "lastname": reservation.nom,
-            "profession": reservation.profession,
-            "site_name": "Ton Site",
+            "full_name": full_name,
+            "profession": reservation.profession if reservation.profession else "",
+            "site_name": "Cefiis-IDH",  # ou votre nom
             "year": datetime.now().year,
         })
 
-        subject = "✅ Confirmation de votre inscription au webinaire"
+        subject = "✅ Votre place est réservée – Webinaire Consultant Indépendant"
         from_email = settings.DEFAULT_FROM_EMAIL
         to_email = [reservation.email]
 
@@ -58,12 +63,13 @@ def reservation_webinaire(request):
         try:
             data = json.loads(request.body.decode("utf-8"))
             
-            # Récupération et validation des données
+            # Récupération des données
             email = data.get("email", "").strip()
             prenom = escape(data.get("prenom", "").strip())
-            nom = escape(data.get("nom", "").strip())
-            profession = escape(data.get("profession", "").strip())
-            niveau_etude = escape(data.get("niveau_etude", "").strip())
+            # Ces champs ne sont plus obligatoires
+            nom = escape(data.get("nom", "").strip()) or "Anonyme"
+            profession = escape(data.get("profession", "").strip()) or ""
+            niveau_etude = escape(data.get("niveau_etude", "").strip()) or "Non spécifié"
             
             # Validation de l'email
             try:
@@ -75,16 +81,11 @@ def reservation_webinaire(request):
                     "field_errors": {"email": "Adresse email invalide"}
                 }, status=400)
             
-            # Validation des champs obligatoires
+            # Validation des champs obligatoires (seulement prénom)
             field_errors = {}
             if not prenom:
                 field_errors["prenom"] = "Ce champ est obligatoire"
-            if not nom:
-                field_errors["nom"] = "Ce champ est obligatoire"
-            if not profession:
-                field_errors["profession"] = "Ce champ est obligatoire"
-            if not niveau_etude:
-                field_errors["niveau_etude"] = "Veuillez sélectionner votre niveau d'étude"
+            # Plus de validation pour nom, profession, niveau_etude
             
             if field_errors:
                 return JsonResponse({
@@ -101,7 +102,7 @@ def reservation_webinaire(request):
                     "field_errors": {"email": "Cet email est déjà inscrit"}
                 }, status=400)
             
-            # Créer la nouvelle réservation
+            # Créer la nouvelle réservation avec les champs par défaut si absents
             reservation = ReservationWebinaire.objects.create(
                 email=email,
                 prenom=prenom,
@@ -112,7 +113,6 @@ def reservation_webinaire(request):
             
             message = "Nouvelle réservation enregistrée."
             threading.Thread(target=send_webinaire_confirmation_email, args=(reservation,)).start()
-
             print(message)
 
             return JsonResponse(
@@ -125,6 +125,8 @@ def reservation_webinaire(request):
 
     return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
+def webinaire_page_c(request):
+    return render(request, 'webinaire/inscription-webinaire-c.html')
 
 # def email_open(request):
 #     email = request.GET.get("email")

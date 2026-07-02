@@ -1,0 +1,485 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    {% include "marketing_head_snippet.html" %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenez Consultant Indépendant – Webinaire Gratuit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blanc: #ffffff;
+            --bleu: #2684fc;
+            --rouge: #ca0002;
+            --texte: #333333;
+            --gris-clair: #f5f7fa;
+            --ombre: rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--texte);
+            background-color: var(--blanc);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--bleu) 0%, #1a6ad8 100%);
+            color: var(--blanc);
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+
+        .countdown {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .countdown-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .countdown-unit {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 40px;
+            padding: 50px 0;
+            align-items: flex-start;
+        }
+
+        .content-left {
+            flex: 1.2;
+        }
+
+        .content-right {
+            flex: 0.9;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-section {
+            background-color: var(--blanc);
+            padding: 35px 40px;
+            border-radius: 15px;
+            box-shadow: 0 12px 35px var(--ombre);
+            width: 100%;
+        }
+
+        .limited-spots {
+            background: var(--rouge);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .form-section h3 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            color: var(--bleu);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--bleu);
+            box-shadow: 0 0 0 3px rgba(38, 132, 252, 0.2);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--rouge);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 25px;
+            text-transform: uppercase;
+            box-shadow: 0 8px 20px rgba(202, 0, 2, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(202, 0, 2, 0.6);
+        }
+
+        .presentation {
+            background-color: var(--blanc);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--ombre);
+            margin-bottom: 30px;
+        }
+
+        .presentation-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .photo-container {
+            text-align: center;
+        }
+
+        .photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--gris-clair);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--ombre);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .presentation-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--bleu);
+            font-weight: 700;
+        }
+
+        .presentation-text p {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .highlights {
+            margin-top: 20px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            background-color: var(--gris-clair);
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .highlight-item:hover {
+            transform: translateX(5px);
+        }
+
+        .checkmark {
+            color: var(--bleu);
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1.2em;
+        }
+
+        .projection-section {
+            padding: 60px 0;
+            background: #f9fafc;
+            width: 100%;
+        }
+
+        .section-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-container h3 {
+            font-size: 2rem;
+            color: var(--bleu);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .faq-section {
+            padding: 50px 0;
+            background: white;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            background: var(--gris-clair);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--bleu);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background: var(--bleu);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .content-left, .content-right {
+                flex: 1;
+                width: 100%;
+            }
+            h1 { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+    {% include "marketing_body_snippet.html" %}
+    
+    <header>
+        <div class="container">
+            <h1><span style="color: var(--rouge);">Webinaire Exclusif</span> : Transformez vos compétences en une activité de consultant indépendant</h1>
+            <h2>Découvrez la méthode simple pour transformer votre expertise en contrats rentables – même sans réseau en Afrique.</h2>
+
+            <div class="enrolled-badge" style="background: rgba(255,255,255,0.15); color: white; padding: 10px 20px; border-radius: 30px; display: inline-block; margin-bottom: 20px; font-weight: 600;">
+                <i class="fas fa-users"></i> Déjà +500 professionnels accompagnés
+            </div>
+            
+            <div class="countdown">
+                <div class="countdown-title">Le webinaire commence dans :</div>
+                <div class="countdown-timer">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-label">Jours</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-label">Heures</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-label">Secondes</div>
+                    </div>
+                </div>
+                <p style="margin-top: 10px; font-size:0.9rem; opacity:0.9;">⚠️ Les inscriptions ferment 1 heure avant le direct.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container main-content">
+        <!-- Colonne gauche : présentation du formateur -->
+        <div class="content-left">
+            <section class="presentation">
+                <div class="presentation-content">
+                    <div class="photo-container">
+                        <div class="photo">
+                            <img src="{% static 'webinaire/image/photo.jpg' %}" alt="Étienne GBEDAGBE">
+                        </div>
+                    </div>
+                    <div class="presentation-text">
+                        <h3>Étienne GBEDAGBE</h3>
+                        <p><strong>Consultant, formateur, fondateur de Cefiis-IDH</strong> – 10 ans d’expérience en conseil en Afrique.</p>
+                        <p>Pendant des années, j’étais persuadé que pour vivre du conseil, il fallait un énorme carnet d’adresses, être connu ou avoir fait une grande école. J’avais tort. J’ai découvert que les consultants les mieux payés ne sont pas toujours les plus compétents. Ce sont ceux qui appliquent une logique simple pour transformer une expertise en contrats rentables. C’est cette logique que je vous révèle dans ce webinaire.</p>
+                        
+                        <div class="highlights">
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span>Plus de <span style="color: var(--rouge); font-weight: 600;">50 missions</span> de conseil signées</span>
+                            </div>
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span>Une communauté active de <span style="color: var(--rouge); font-weight: 600;">500+ membres</span></span>
+                            </div>
+                            <div class="highlight-item">
+                                <span class="checkmark">✓</span>
+                                <span><span style="color: var(--rouge); font-weight: 600;">100 professionnels</span> accompagnés vers le succès</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Colonne droite : formulaire -->
+        <div class="content-right">
+            <div class="form-wrapper">
+                <section class="form-section">
+                    <div class="limited-spots" id="remaining-spots">
+                        <i class="fas fa-exclamation-circle"></i> Seulement <span id="spots-count">8</span> places restantes !
+                    </div>
+                    <h3>Réservez votre place gratuite</h3>
+                    <form id="webinar-form">
+                        <div class="form-group">
+                            <label for="prenom">Votre prénom</label>
+                            <input type="text" id="prenom" name="prenom" placeholder="Ex. Jean" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Votre email</label>
+                            <input type="email" id="email" name="email" placeholder="vous@exemple.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profession">Profession <small>(optionnel)</small></label>
+                            <input type="text" id="profession" name="profession" placeholder="Consultant, RH, Formateur...">
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Je m'inscris maintenant
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projection avec bouton ajouté -->
+    <section class="projection-section">
+        <div class="section-container">
+            <h3>À l'issue de ce webinaire, vous aurez :</h3>
+            <div class="highlights">
+                <div class="highlight-item"><span class="checkmark">✓</span> Votre positionnement clair, celui qui attire naturellement les clients</div>
+                <div class="highlight-item"><span class="checkmark">✓</span> Une offre irrésistible centrée sur un résultat concret</div>
+                <div class="highlight-item"><span class="checkmark">✓</span> Votre prix définitif, justifié et non négociable</div>
+                <div class="highlight-item"><span class="checkmark">✓</span> Une stratégie simple pour trouver des clients sans réseau</div>
+                <div class="highlight-item"><span class="checkmark">✓</span> Un plan d'action de 30 jours pour sécuriser votre premier contrat</div>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="#webinar-form" class="btn" style="display: inline-block; width: auto; padding: 14px 30px;">Je réserve ma place maintenant</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container" style="max-width: 800px;">
+            <h3 style="text-align: center; font-size: 2rem; color: var(--bleu); margin-bottom: 40px;">Questions fréquentes</h3>
+            <div class="faq-item">
+                <div class="faq-question">Est-ce vraiment gratuit ?</div>
+                <div class="faq-reponse">Oui, totalement. Vous ne paierez rien.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Y aura-t-il un replay ?</div>
+                <div class="faq-reponse">Oui, envoyé sous 24h à tous les inscrits.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Faut-il de l'expérience ?</div>
+                <div class="faq-reponse">Non, la méthode est conçue pour les experts métier sans clientèle existante.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Prenez 90 minutes pour poser les bases de votre nouvelle activité de consultant.</p>
+            <a href="#webinar-form" class="btn" style="display: inline-block; width: auto; margin-top: 20px; background: white; color: var(--rouge);">Je veux ma place gratuite</a>
+        </div>
+    </footer>
+
+    <script src="{% static 'webinaire/js/webinaire-reservation-page.js' %}"></script>
+</body>
+</html>
+

@@ -3,23 +3,567 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-     {% include "marketing_head_snippet.html" %}
+    {% include "marketing_head_snippet.html" %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webinaire Consultation - Stratégies Modernes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'webinaire/css/webinaire-reservation-page.css' %}"/>
+    <style>
+        :root {
+            --blanc: #ffffff;
+            --bleu: #2684fc;
+            --rouge: #ca0002;
+            --texte: #333333;
+            --gris-clair: #f5f7fa;
+            --ombre: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--texte);
+            background-color: var(--blanc);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--bleu) 0%, #1a6ad8 100%);
+            color: var(--blanc);
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .countdown {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+            backdrop-filter: blur(5px);
+        }
+
+        .reassurance-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .countdown-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .countdown-unit {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 40px;
+            padding: 40px 0;
+        }
+
+        .content-left {
+            flex: 1.2;
+            padding-left: 0;
+        }
+
+        .content-right {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .presentation {
+            background-color: var(--blanc);
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--ombre);
+        }
+
+        .presentation-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .photo-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--gris-clair);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--ombre);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .presentation-text {
+            flex: 1;
+        }
+
+        .presentation-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--bleu);
+            position: relative;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        .presentation-text h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--bleu), var(--rouge));
+            border-radius: 3px;
+        }
+
+        .presentation-text p {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .highlights {
+            margin-top: 20px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 20px 25px;
+            background-color: var(--gris-clair);
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .highlight-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .enrolled-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--bleu) 0%, #1a6ad8 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(38, 132, 252, 0.3);
+        }
+
+        .checkmark {
+            color: var(--bleu);
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1.2em;
+        }
+
+        .form-section {
+            background-color: var(--blanc);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px var(--ombre);
+            width: 100%;
+            max-width: 360px; /* légèrement réduit */
+            position: relative;
+            margin-left: auto; /* aligne à droite si possible */
+            margin-right: auto;
+        }
+
+        .limited-spots {
+            background: linear-gradient(135deg, var(--rouge) 0%, #ff3030 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(202, 0, 2, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .form-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--bleu);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--bleu);
+            box-shadow: 0 0 0 3px rgba(38, 132, 252, 0.2);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(to right, var(--rouge), #ff5252);
+            color: var(--blanc);
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 15px;
+            box-shadow: 0 6px 18px rgba(202, 0, 2, 0.4);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(202, 0, 2, 0.5);
+            background: linear-gradient(to right, #ff5252, var(--rouge));
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 12px rgba(202, 0, 2, 0.4);
+        }
+
+        .before-after-section,
+        .pourquoi-section {
+            padding: 50px 0;
+            margin: 40px 0;
+        }
+
+        .before-after-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4fc 100%);
+            border-top: 1px solid #e0e7ff;
+            border-bottom: 1px solid #e0e7ff;
+        }
+
+        .section-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-container h3 {
+            font-size: 2rem;
+            color: var(--bleu);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+
+        .section-container h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--bleu), var(--rouge));
+            border-radius: 3px;
+        }
+
+        .comparison-table {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .comparison-col {
+            flex: 1;
+            min-width: 280px;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--ombre);
+            transition: transform 0.3s;
+        }
+
+        .comparison-col:hover {
+            transform: translateY(-5px);
+        }
+
+        .comparison-col h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .col-before h4 { color: #999; }
+        .col-after h4 { color: var(--bleu); }
+
+        .comparison-col ul { list-style: none; }
+
+        .comparison-col li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .col-before li i { color: #ccc; }
+        .col-after li i { color: var(--bleu); }
+
+        .bonus-banner {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border: 2px dashed #ff9800;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 25px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.2);
+        }
+
+        .bonus-banner i { color: #ff9800; font-size: 1.8rem; margin-bottom: 8px; }
+        .bonus-banner p { font-size: 1rem; font-weight: 600; color: #e65100; margin: 0; }
+        .bonus-banner .valeur { font-size: 0.85rem; color: #bf360c; margin-top: 5px; }
+
+        .learning-section {
+            background: linear-gradient(to bottom, var(--gris-clair), #e8eef7);
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .learning-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .learning-content h3 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--bleu);
+            font-weight: 700;
+        }
+
+        .learning-list { list-style: none; text-align: left; }
+
+        .learning-item {
+            background-color: var(--blanc);
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--ombre);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid var(--bleu);
+        }
+
+        .learning-item:hover { transform: translateY(-5px); box-shadow: 0 10px 25px var(--ombre); }
+
+        .learning-icon { margin-right: 20px; font-size: 1.8rem; color: var(--bleu); min-width: 40px; text-align: center; }
+
+        .faq-section {
+            background: #f9fafc;
+            padding: 50px 0;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px var(--ombre);
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--bleu);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .faq-reponse { font-size: 1rem; }
+
+        footer {
+            background-color: var(--bleu);
+            color: var(--blanc);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .bold { font-weight: 600; }
+        .color-red { color: var(--rouge); font-weight: 600; }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+        .radio-option:hover { border-color: var(--bleu); background-color: #f0f7ff; }
+
+        .radio-option input[type="radio"] { margin-right: 10px; width: auto; }
+
+        .radio-label { cursor: pointer; flex-grow: 1; }
+
+        .radio-option.selected {
+            border-color: var(--bleu);
+            background-color: #e6f2ff;
+            box-shadow: 0 0 0 2px rgba(38, 132, 252, 0.2);
+        }
+
+        .radio-option.field-error { border-color: #ff5252; background-color: #fff5f5; }
+
+        @keyframes highlight {
+            0% { box-shadow: 0 0 0 0 rgba(38, 132, 252, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(38, 132, 252, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(38, 132, 252, 0); }
+        }
+
+        .highlight-animation { animation: highlight 2s ease-in-out; }
+
+        @media (max-width: 900px) {
+            .main-content { flex-direction: column; }
+            .content-right { align-items: center; }
+            h1 { font-size: 1.7rem; }
+            h2 { font-size: 1rem; }
+            .countdown-unit { min-width: 50px; }
+            .countdown-value { font-size: 1.2rem; }
+            .presentation-text h3 { font-size: 1.5rem; }
+            .learning-content h3 { font-size: 1.7rem; }
+            .learning-item { padding: 20px; }
+            .learning-icon { font-size: 1.5rem; margin-right: 15px; }
+            .comparison-table { flex-direction: column; align-items: center; }
+            .form-section { max-width: 100%; margin: 0 auto; }
+        }
+    </style>
 </head>
 <body>
     {% include "marketing_body_snippet.html" %}
     <header>
         <div class="container">
-            <h1> <span style="color: #ca0002;"> Webinaire Exclusif</span> : Transformez vos compétences en revenus concrets comme consultant Indépendant </h1>
-            {% comment %} <h2>Apprenez à décrocher vos premiers clients et générer vos premiers revenus dès votre lancement </h2> {% endcomment %}
+            <h1>Transformez votre expertise en activité de consultant indépendant – <span style="color: #ca0002;">Webinaire exclusif</span></h1>
+            <h2>Devenez un consultant professionnel : obtenez positionnement, offre, premier client et première mission.</h2>
 
-            <!-- Badge "+500 inscrits" ajouté ici -->
             <div class="enrolled-badge">
                 <i class="fas fa-users"></i> +500 personnes déjà inscrites !
             </div>
@@ -44,6 +588,7 @@
                         <div class="countdown-label">Secondes</div>
                     </div>
                 </div>
+                <p style="margin-top: 10px; font-size:0.9rem; opacity:0.9;">⚠️ Les inscriptions ferment 1 heure avant le direct.</p>
             </div>
         </div>
     </header>
@@ -54,35 +599,26 @@
                 <div class="presentation-content">
                     <div class="photo-container">
                         <div class="photo">
-                            <img src="{% static 'webinaire/image/photo.jpg' %}" alt="Photo de l'animateur">
+                            <img src="{% static 'webinaire/image/photo.jpg' %}" alt="Étienne GBEDAGBE">
                         </div>
-                         {% comment %} <div class="photo">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
-                            </svg>
-                        </div> {% endcomment %}
                     </div>
                     <div class="presentation-text highlight-animation">
-                        <h3> Animateur </h3>
-
-                        {% comment %} 👋 Étienne GBEDAGBE est consultant, formateur et fondateur de Cefiis-IDH.
-
-                        Depuis plus de 10 ans, il accompagne les entreprises et les particuliers dans la consultation et la gestion des ressources humaines. {% endcomment %}
-
-                        <p>👋 Je m'appelle <strong>Étienne GBEDAGBE</strong>, consultant, formateur et fondateur de <strong>Cefiis-IDH</strong>.</p>
-                        <p>Depuis plus de 10 ans, j'accompagne les entreprises et particuliers en tant qu'expert consultant</p>
+                        <h3>Étienne GBEDAGBE</h3>
+                        <p><strong>Consultant, formateur, fondateur de Cefiis-IDH</strong> – 10 ans d’expérience en conseil.</p>
+                        <p>Il y a 10 ans, j’étais un expert métier passionné, mais personne ne m’appelait pour des missions. J’ai dû apprendre à me positionner, à construire une offre, à trouver des clients récurrents. Aujourd’hui, j’ai réalisé <strong>plus de 50 missions de conseil</strong>, et j’ai aidé plus de 100 professionnels à faire la même chose. Je vous montre tout dans ce webinaire.</p>
+                        
                         <div class="highlights">
                             <div class="highlight-item">
                                 <span class="checkmark">✓</span>
-                                <span>J'ai généré plus de <span class="color-red"> 40 millions FCFA</span> grâce à mes missions de consultation.</span>
+                                <span>Plus de <span class="color-red">50 missions</span> de conseil</span>
                             </div>
                             <div class="highlight-item">
                                 <span class="checkmark">✓</span>
-                                <span>J'ai construit une <span class="color-red"> communauté de 500+ aspirants </span> consultants.</span>
+                                <span>Une communauté active de <span class="color-red">500+ membres</span> </span>
                             </div>
                             <div class="highlight-item">
                                 <span class="checkmark">✓</span>
-                                <span>J'ai formé et accompagné plus de <span class="color-red">100 professionnels </span> à se lancer avec succès.</span>
+                                <span><span class="color-red">100 professionnels</span> accompagnés vers le succès en tant que consultants</span>
                             </div>
                         </div>
                     </div>
@@ -92,9 +628,9 @@
 
         <div class="content-right">
             <section class="form-section">
-            <div class="limited-spots" id="remaining-spots">
-                <i class="fas fa-exclamation-circle"></i> Seulement <span id="spots-count">8</span> places restantes !
-            </div>
+                <div class="limited-spots" id="remaining-spots">
+                    <i class="fas fa-exclamation-circle"></i> Seulement <span id="spots-count">8</span> places restantes !
+                </div>
                 <h3>Inscrivez-vous gratuitement</h3>
                 <form id="webinar-form">
                     <div class="form-group">
@@ -102,79 +638,139 @@
                         <input type="text" id="prenom" name="prenom" required>
                     </div>
                     <div class="form-group">
-                        <label for="nom">Nom</label>
-                        <input type="text" id="nom" name="nom" required>
-                    </div>
-                    <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="profession">Profession</label>
-                        <input type="text" id="profession" name="profession" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Niveau d'étude</label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" id="bac5" name="niveau_etude" value="BAC+5" required>
-                                <span class="radio-label">BAC+5</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" id="bac3" name="niveau_etude" value="BAC+3">
-                                <span class="radio-label">BAC+3</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" id="bac7" name="niveau_etude" value="BAC+7">
-                                <span class="radio-label">BAC+7</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" id="etudiant" name="niveau_etude" value="Etudiant">
-                                <span class="radio-label">Étudiant</span>
-                            </label>
-                        </div>
+                        <label for="profession">Profession <small>(optionnel)</small></label>
+                        <input type="text" id="profession" name="profession">
                     </div>
                     <button type="submit" class="btn">
-                        <i class="fas fa-check-circle"></i> Je réserve ma place maintenant
+                        <i class="fas fa-check-circle"></i> Je réserve ma place
                     </button>
                 </form>
                 <p class="reassurance-text">
-                    Inscrivez-vous gratuitement dès maintenant – votre place est réservée en 1 clic !
+                    🎁 En vous inscrivant, vous recevez le guide <strong>“Les 4 piliers pour passer d’expert à consultant”</strong>.
                 </p>
+                <div class="bonus-banner">
+                    <i class="fas fa-gift"></i>
+                    <p>BONUS exclusif : Les 4 piliers pour passer d’expert à consultant</p>
+                    <div class="valeur">(Valeur : 25 000 FCFA – Offert pour les inscrits présents en direct)</div>
+                </div>
             </section>
         </div>
     </div>
 
+    <!-- Section Ce que vous allez découvrir : les 4 piliers -->
     <section class="learning-section">
         <div class="learning-content">
-            <h3>Ce que vous apprendrez lors de ce webinaire</h3>
+            <h3>Au cours de ce webinaire, vous découvrirez comment :</h3>
             <ul class="learning-list">
                 <li class="learning-item">
-                    <span class="learning-icon">✓</span>
-                    <span class="bold">Transformer votre expertise en revenus</span>
+                    <span class="learning-icon"><i class="fas fa-bullseye"></i></span>
+                    <div>
+                        <strong>Obtenir votre positionnement</strong><br>
+                        <small>Devenir un consultant lisible et attractif dans votre domaine d’expertise</small>
+                    </div>
                 </li>
                 <li class="learning-item">
-                    <span class="learning-icon">✓</span>
-                    <span class="bold">Trouver vos premiers clients sans réseau</span>
+                    <span class="learning-icon"><i class="fas fa-file-signature"></i></span>
+                    <div>
+                        <strong>Obtenir votre offre</strong><br>
+                        <small>Structurer une prestation irrésistible et crédible, avec une méthodologie claire</small>
+                    </div>
                 </li>
                 <li class="learning-item">
-                    <span class="learning-icon">✓</span>
-                    <span class="bold">Structurer une offre irrésistible et crédible</span>
+                    <span class="learning-icon"><i class="fas fa-handshake"></i></span>
+                    <div>
+                        <strong>Obtenir votre premier client</strong><br>
+                        <small>Les déclics pour vendre votre service, même sans réseau</small>
+                    </div>
                 </li>
                 <li class="learning-item">
-                    <span class="learning-icon">✓</span>
-                    <span class="bold">Profiter de la croissance du marché du conseil</span>
+                    <span class="learning-icon"><i class="fas fa-chart-line"></i></span>
+                    <div>
+                        <strong>Obtenir votre première mission</strong><br>
+                        <small>Organiser votre activité pour générer des revenus récurrents</small>
+                    </div>
                 </li>
             </ul>
+            <p style="margin-top: 30px;"><em>Passez du stade d’expert métier à consultant émergent (niveau 1 à 3 sur 7), capable de produire des résultats clients et d’en vivre.</em></p>
         </div>
     </section>
 
+    <!-- Pourquoi le métier de consultant aujourd'hui ? -->
+    <section class="pourquoi-section">
+        <div class="section-container">
+            <h3>Pourquoi devenir consultant maintenant ?</h3>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px; font-size: 1.1rem;">
+                Le marché du conseil est en forte croissance, les entreprises externalisent de plus en plus. Un consultant vend un <strong>service</strong>, à un <strong>public cible</strong>, avec une <strong>promesse forte</strong> et une <strong>méthodologie éprouvée</strong>. Vous avez déjà l’expertise métier, il ne vous manque que la méthode pour la transformer en revenus.
+            </p>
+            <div style="text-align: center;">
+                <a href="#webinar-form" class="btn" style="display: inline-block; width: auto; padding: 14px 30px;">Je m'inscris maintenant</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Avant/Après -->
+    <section class="before-after-section">
+        <div class="section-container">
+            <h3>À qui s’adresse ce webinaire ?</h3>
+            <div class="comparison-table">
+                <div class="comparison-col col-before">
+                    <h4><i class="fas fa-hourglass-half"></i> Avant</h4>
+                    <ul>
+                        <li><i class="fas fa-times-circle"></i> Expert reconnu mais sans client</li>
+                        <li><i class="fas fa-times-circle"></i> Vous ne savez pas comment vendre votre savoir</li>
+                        <li><i class="fas fa-times-circle"></i> Vous stressez sur vos revenus</li>
+                        <li><i class="fas fa-times-circle"></i> Vous dépendez d’un réseau inexistant</li>
+                    </ul>
+                </div>
+                <div class="comparison-col col-after">
+                    <h4><i class="fas fa-check-circle"></i> Après</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Consultant avec une offre claire et des clients réguliers</li>
+                        <li><i class="fas fa-check-circle"></i> Vous maîtrisez une méthode éprouvée pour signer des missions</li>
+                        <li><i class="fas fa-check-circle"></i> Vous construisez un pipeline stable</li>
+                        <li><i class="fas fa-check-circle"></i> Vous attirez des clients sans prospection forcée</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container" style="max-width: 800px;">
+            <h3 style="text-align: center; font-size: 2rem; color: var(--bleu); margin-bottom: 40px;">Questions fréquentes</h3>
+            <div class="faq-item">
+                <div class="faq-question">Le webinaire est-il vraiment gratuit ?</div>
+                <div class="faq-reponse">Oui, totalement gratuit. Aucune carte bancaire demandée.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Puis-je poser mes questions en direct ?</div>
+                <div class="faq-reponse">Absolument, une session live de questions/réponses est prévue à la fin.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Je ne suis pas disponible à cette date, que faire ?</div>
+                <div class="faq-reponse">Inscrivez-vous quand même : le replay sera envoyé à tous les inscrits sous 24h.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Qui peut devenir consultant ?</div>
+                <div class="faq-reponse">Tout expert métier souhaitant vendre son savoir-faire en service (domaine technique, RH, finance, IT, etc.). Vous découvrirez la méthode pour structurer votre activité.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rappel final + bouton -->
     <footer>
         <div class="container">
-            <p>⚡ Les places sont limitées ! Inscrivez-vous dès maintenant et recevez votre lien de connexion par email.</p>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">⚡ Prêt à faire le premier pas vers votre activité de consultant indépendant ?</p>
+            <p>Inscrivez-vous et recevez votre lien de connexion immédiatement.</p>
+            <a href="#webinar-form" class="btn" style="display: inline-block; width: auto; margin-top: 20px;">Je réserve ma place</a>
         </div>
     </footer>
+
     <script src="{% static 'webinaire/js/webinaire-reservation-page.js' %}"></script>
 </body>
 </html>
-

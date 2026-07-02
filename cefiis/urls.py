@@ -21,8 +21,9 @@ from webinaire.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pourquoi-devenir-consultant/', webinaire_pre_frame_bridge, name="webinaire-pre-frame-bridge"), 
-    path('inscription-webinaire/', webinaire_page, name="webinaire-reservation-page"),
+    # path('inscription-webinaire/', webinaire_page, name="webinaire-reservation-page"),
     path('inscription-webinaire-confirmé/', webinaire_confirmation, name="webinaire-reservation"),
     path("confirmation-inscription-webinaire/", reservation_webinaire, name="reservation_webinaire"),
+    path("inscription-webinaire/", webinaire_page_c, name="webinaire_page_c"),
     # path("email/open/", email_open, name="email_open"),
 ]
