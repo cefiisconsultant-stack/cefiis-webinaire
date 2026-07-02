@@ -5,3 +5,9 @@ db.sqlite3
 venv/
 static/
 media/
+__pycache__/
+*.pyc
+.cache/
+.bash_history
+.gunicorn/
+.local/
