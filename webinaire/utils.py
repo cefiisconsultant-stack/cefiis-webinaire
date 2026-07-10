@@ -5,7 +5,31 @@ from django.utils.html import strip_tags
 from webinaire.models import *
 from django.conf import settings
 
+def envoyer_rappel_24h(email_test=None):
+    """Envoie le rappel J-24 aux inscrits (template rappel_webinaire-24.html)"""
+    if email_test:
+        inscrits = ReservationWebinaire.objects.filter(email=email_test)
+    else:
+        inscrits = ReservationWebinaire.objects.all()
 
+    for inscrit in inscrits:
+        context = {'inscrit': inscrit}
+        html_content = render_to_string('webinaire/rappel_webinaire-24.html', context)
+        text_content = strip_tags(html_content)
+
+        msg = EmailMultiAlternatives(
+            subject="⏰ Votre webinaire démarre dans 24h !",
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[inscrit.email],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        try:
+            msg.send(fail_silently=False)
+            print(f"✅ Rappel 24h envoyé à {inscrit.email}")
+        except Exception as e:
+            print(f"❌ Erreur pour {inscrit.email} : {e}")
+            
 def envoyer_rappel_webinaire_cibles():
     # Liste des emails valides qui n'ont pas encore reçu
     emails_cibles = ReservationWebinaire.objects.filter(
