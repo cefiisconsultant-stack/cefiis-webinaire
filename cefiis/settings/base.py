@@ -104,12 +104,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'cefiis.consultant@gmail.com'
-EMAIL_HOST_PASSWORD = 'ufdz lguz upul pxyq'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST = 'smtp.hostinger.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 
+EMAIL_HOST_USER = 'etiennegbedagbe@cefiis.com'
+# Collez ici le mot de passe d'application généré sur votre écran précédent
+EMAIL_HOST_PASSWORD = 'e5mo-o3dx-jsnq-7jds' 
+DEFAULT_FROM_EMAIL = 'etiennegbedagbe@cefiis.com'
+SERVER_EMAIL = 'etiennegbedagbe@cefiis.com'
 
  

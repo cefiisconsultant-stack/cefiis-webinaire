@@ -29,7 +29,7 @@ def envoyer_rappel_24h(email_test=None):
             print(f"✅ Rappel 24h envoyé à {inscrit.email}")
         except Exception as e:
             print(f"❌ Erreur pour {inscrit.email} : {e}")
-            
+
 def envoyer_rappel_webinaire_cibles():
     # Liste des emails valides qui n'ont pas encore reçu
     emails_cibles = ReservationWebinaire.objects.filter(
@@ -201,3 +201,32 @@ def send_soap_opera_email4_to_all():
             print(f"[ERREUR] Email 2 non envoyé à {reservation.email} : {e}")
 
 
+def envoyer_lien_webinaire_3h(email_test=None, lien_webinaire='https://meet.google.com/mha-xmqm-hgu'):
+    """
+    Envoie l'email contenant le lien de connexion.
+    """
+    if email_test:
+        inscrits = ReservationWebinaire.objects.filter(email=email_test)
+    else:
+        inscrits = ReservationWebinaire.objects.all()
+
+    for inscrit in inscrits:
+        context = {
+            'inscrit': inscrit,
+            'lien_webinaire': lien_webinaire,
+        }
+        html_content = render_to_string('webinaire/rappel_webinaire-3h.html', context)
+        text_content = strip_tags(html_content)
+
+        msg = EmailMultiAlternatives(
+            subject="🔗 Votre lien de connexion – Webinaire Cefiis-IDH",
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[inscrit.email],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        try:
+            msg.send(fail_silently=False)
+            print(f"✅ Lien envoyé à {inscrit.email}")
+        except Exception as e:
+            print(f"❌ Erreur pour {inscrit.email} : {e}")
