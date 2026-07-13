@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De l'Expert au Consultant Professionnel — L'ebook | Cefiis-IDH</title>
+<meta name="description" content="Le guide en 5 étapes pour transformer votre expertise en activité de conseil rentable. Positionnement, offre, prix, prospection, premier contrat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2D7DC1; --blue-deep:#1D5C93; --blue-pale:#EAF2F9;
+    --red:#C8102E; --ink:#122A43; --muted:#5B6B7C; --line:#D8E3EC; --paper:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'Inter',sans-serif; color:var(--ink); background:var(--paper); line-height:1.62; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.serif{ font-family:'Source Serif 4',serif; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  .narrow{ max-width:720px; margin:0 auto; padding:0 24px; }
+
+  .btn{ display:inline-block; padding:16px 34px; border-radius:2px; font-weight:600; font-size:15px;
+    text-decoration:none; border:1.5px solid transparent; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; }
+  .btn-red{ background:var(--red); color:#fff; }
+  .btn-red:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(200,16,46,.28); }
+  .btn-outline{ background:transparent; color:var(--ink); border-color:var(--line); }
+  .btn-outline:hover{ border-color:var(--blue); color:var(--blue); }
+  .btn-outline-light{ background:transparent; color:#fff; border-color:rgba(255,255,255,.35); }
+  .btn-outline-light:hover{ border-color:#fff; }
+
+  .ref{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); text-transform:uppercase; letter-spacing:2px; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .ref::before{ content:""; width:26px; height:1px; background:var(--blue); }
+  h2.title{ font-size:30px; font-weight:600; margin-bottom:16px; max-width:640px; }
+  .title-rule{ width:100%; height:1px; background:var(--line); position:relative; margin:14px 0 40px; }
+  .title-rule::after{ content:""; position:absolute; left:0; top:-2px; width:44px; height:3px; background:var(--red); }
+  p.desc{ color:var(--muted); font-size:15.5px; max-width:600px; margin-bottom:8px; }
+
+  section{ padding:80px 0; }
+  .section-tint{ background:var(--blue-pale); }
+
+  /* ---- Petit repère de marque, sans nav ---- */
+  .brand-mark{ text-align:center; padding:28px 0 0; }
+  .brand-mark span{ font-family:'Source Serif 4',serif; font-weight:600; font-size:15px; color:var(--muted); letter-spacing:.3px; }
+
+  /* ---- Hero ---- */
+  .hero{ background:linear-gradient(180deg, var(--blue-pale) 0%, #fff 100%); padding:44px 0 90px; }
+  .hero .wrap{ display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; }
+  .hero h1{ font-size:40px; line-height:1.2; font-weight:600; margin-bottom:20px; color:var(--ink); }
+  .hero h1 em{ font-style:italic; color:var(--blue); font-weight:500; }
+  .hero p.lead{ font-size:16px; color:var(--muted); max-width:520px; margin-bottom:30px; }
+  .hero .ctas{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:26px;}
+  .hero .trust{ display:flex; gap:22px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace; }
+  .hero .trust b{ color:var(--red); font-family:'Inter',sans-serif; }
+
+  .book-mock{
+    position:relative; width:100%; max-width:280px; margin:0 auto;
+    aspect-ratio:165/240; border-radius:4px;
+    background:linear-gradient(160deg, var(--ink) 0%, #1B3A5C 100%);
+    border:1px solid rgba(45,125,193,.4);
+    box-shadow:0 40px 80px -20px rgba(18,42,67,.35);
+    padding:26px 22px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+  }
+  .book-mock .k{ color:#8FB9DE; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:14px; font-family:'IBM Plex Mono',monospace; }
+  .book-mock h3{ font-size:18px; line-height:1.24; color:#fff; font-weight:600; margin-bottom:10px; }
+  .book-mock h3 em{ color:var(--blue); font-style:italic; font-weight:400; }
+  .book-mock .s{ font-size:10.5px; color:#B9C9DA; line-height:1.5; margin-bottom:16px; }
+  .book-mock .stairs{ display:flex; align-items:flex-end; gap:5px; height:34px; margin-top:6px; }
+  .book-mock .stairs i{ width:14px; background:var(--red); display:block; opacity:.9; }
+
+  /* ---- Problem ---- */
+  .problem-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:40px; }
+  .problem-card{ background:#fff; border:1px solid var(--line); border-radius:4px; padding:20px 22px; display:flex; gap:14px; align-items:flex-start; }
+  .problem-card .x{ color:var(--red); font-weight:800; font-size:15px; flex:none; margin-top:2px; }
+  .problem-card p{ font-size:14px; color:var(--ink); }
+  .paradox{ margin-top:36px; padding:24px 28px; border-left:3px solid var(--red); background:#fff; font-family:'Source Serif 4',serif; font-style:italic; font-size:18px; color:var(--ink); line-height:1.5; }
+
+  /* ---- Steps ---- */
+  .steps{ margin-top:46px; }
+  .step-row{ display:grid; grid-template-columns:56px 1fr; gap:22px; padding:24px 0; border-bottom:1px solid var(--line); }
+  .step-row:first-child{ border-top:1px solid var(--line); }
+  .step-num{ font-family:'IBM Plex Mono',monospace; font-size:22px; color:var(--blue); font-weight:600; }
+  .step-row h3{ font-size:17.5px; margin-bottom:7px; color:var(--ink); font-weight:600; }
+  .step-row p{ color:var(--muted); font-size:14px; max-width:600px; }
+
+  /* ---- Pricing ---- */
+  .pricing-box{ max-width:520px; margin:0 auto; background:var(--ink); color:#fff; border-radius:8px; padding:44px 40px; text-align:center; position:relative; overflow:hidden; }
+  .pricing-box::before{ content:""; position:absolute; inset:0; background:radial-gradient(circle at 85% 0%, rgba(45,125,193,.22), transparent 55%); pointer-events:none; }
+  .pricing-box .p-kicker{ color:#8FB9DE; text-transform:uppercase; letter-spacing:2px; font-size:11.5px; font-weight:700; margin-bottom:14px; font-family:'IBM Plex Mono',monospace; }
+  .price-row{ display:flex; align-items:baseline; justify-content:center; gap:12px; margin:6px 0; }
+  .price-now{ font-family:'IBM Plex Mono',monospace; font-size:44px; font-weight:600; }
+  ul.pbox-list{ list-style:none; text-align:left; margin:24px 0 26px; max-width:340px; margin-left:auto; margin-right:auto; }
+  ul.pbox-list li{ padding:7px 0 7px 24px; position:relative; font-size:14px; color:#D6E2EE; border-bottom:1px solid rgba(255,255,255,.06); }
+  ul.pbox-list li::before{ content:"—"; position:absolute; left:0; color:var(--red); }
+  .guarantee{ margin-top:20px; font-size:12px; color:#8FB9DE; }
+  #achat-erreur{ display:none; background:#3A1A1F; border:1px solid #6B2E36; color:#F3C9C4; font-size:13px; border-radius:4px; padding:10px 14px; margin-bottom:14px; }
+  .insc-field{ margin-bottom:12px; text-align:left; }
+  .insc-field label{ display:block; font-size:12px; color:#B9C9DA; margin-bottom:4px; }
+  .insc-field input{ width:100%; padding:11px 12px; border-radius:4px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-size:14px; }
+
+  /* ---- Upsell vers le programme ---- */
+  .upsell{ background:var(--blue-pale); border:1px solid var(--line); border-radius:8px; padding:44px 40px; }
+  .upsell-grid{ display:grid; grid-template-columns:auto 1fr; gap:30px; align-items:center; }
+  .upsell-num{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--red); border:1.5px solid var(--red); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; flex:none; }
+  .upsell h3{ font-size:21px; margin-bottom:10px; }
+  .upsell p{ color:var(--muted); font-size:14.5px; margin-bottom:18px; max-width:520px; }
+  @media (max-width:640px){ .upsell-grid{ grid-template-columns:1fr; text-align:center; } .upsell-num{ margin:0 auto; } }
+
+  /* ---- FAQ ---- */
+  .faq-item{ border-bottom:1px solid var(--line); padding:20px 0; }
+  .faq-q{ display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; font-size:15px; color:var(--ink); }
+  .faq-q .plus{ font-size:19px; color:var(--red); transition:transform .2s ease; flex:none; margin-left:16px; }
+  .faq-item.open .plus{ transform:rotate(45deg); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; font-size:14px; color:var(--muted); }
+  .faq-item.open .faq-a{ max-height:240px; margin-top:10px; }
+
+  .final-cta{ background:var(--ink); color:#fff; text-align:center; padding:80px 0; }
+  .final-cta h2{ font-size:29px; max-width:600px; margin:0 auto 16px; color:#fff; }
+  .final-cta p{ color:#A9B7C6; margin-bottom:28px; }
+
+  footer{ background:#fff; border-top:1px solid var(--line); padding:36px 0; font-size:12px; color:var(--muted); text-align:center; }
+  footer a{ color:var(--blue); text-decoration:none; }
+
+  @media (max-width: 860px){
+    .hero .wrap{ grid-template-columns:1fr; }
+    .hero h1{ font-size:30px; }
+    .problem-grid{ grid-template-columns:1fr; }
+    .price-now{ font-size:36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-mark"><span>Cefiis-IDH</span></div>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="ref">Ebook · Collection Professionnalisation</div>
+      <h1>De l'expert <em>au</em> consultant que les clients recherchent</h1>
+      <p class="lead">Le guide en 5 étapes pour transformer votre expertise en activité de conseil rentable — positionnement, offre, prix, prospection et premier contrat, avec les outils exacts pour les construire.</p>
+      <div class="ctas">
+        <a href="#offre" class="btn btn-red">Télécharger l'ebook</a>
+        <a href="#interieur" class="btn btn-outline">Voir le sommaire</a>
+      </div>
+      <div class="trust">
+        <div><b>5</b> chapitres actionnables</div>
+        <div><b>5</b> outils MDC™ inclus</div>
+        <div><b>PDF</b> — lecture immédiate</div>
+      </div>
+    </div>
+    <div>
+      <div class="book-mock">
+        <div class="k">Cefiis-IDH</div>
+        <h3>De l'Expert<br><em>au</em> Consultant Professionnel</h3>
+        <div class="s">Le guide en 5 étapes pour transformer votre expertise en activité de conseil rentable</div>
+        <div class="stairs">
+          <i style="height:14px"></i>
+          <i style="height:20px"></i>
+          <i style="height:26px"></i>
+          <i style="height:32px"></i>
+          <i style="height:38px"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="ref">Le constat</div>
+    <h2 class="title">Le marché manque de consultants compétents. Pourtant, des milliers d'experts restent invisibles.</h2>
+    <p class="desc">Ce n'est pas un problème de compétence. C'est un problème de professionnalisation. Cinq erreurs reviennent, quel que soit le secteur d'expertise :</p>
+
+    <div class="problem-grid">
+      <div class="problem-card"><span class="x">✕</span><p>Vendre ses diplômes et son expérience plutôt qu'un résultat pour le client.</p></div>
+      <div class="problem-card"><span class="x">✕</span><p>Rester généraliste « pour ne fermer aucune porte » — et finir invisible.</p></div>
+      <div class="problem-card"><span class="x">✕</span><p>N'avoir aucune offre structurée, seulement de la disponibilité.</p></div>
+      <div class="problem-card"><span class="x">✕</span><p>Attendre d'avoir un réseau avant de commencer à prospecter.</p></div>
+      <div class="problem-card"><span class="x">✕</span><p>Fixer un prix sur le temps passé plutôt que sur la valeur produite.</p></div>
+      <div class="problem-card"><span class="x">✕</span><p>Ne jamais transformer une opportunité informelle en mission signée.</p></div>
+    </div>
+
+    <div class="paradox">« Un expert ne devient pas consultant lorsqu'il acquiert des connaissances supplémentaires. Il le devient lorsqu'il transforme son expertise en résultats vendables. »</div>
+  </div>
+</section>
+
+<section class="section-tint" id="interieur">
+  <div class="wrap">
+    <div class="ref">À l'intérieur du livre</div>
+    <h2 class="title">Cinq étapes. Cinq outils. Un système complet.</h2>
+    <p class="desc">Chaque chapitre correspond à un verrou précis — avec sa théorie, ses erreurs fréquentes, son outil propriétaire MDC™, un cas pratique et un exercice à réaliser directement.</p>
+
+    <div class="steps">
+      <div class="step-row"><div class="step-num">01</div><div><h3>Le positionnement</h3><p>Arrêtez de vendre votre expertise : construisez une promesse que les clients reconnaissent en une phrase, avec le Canevas de Positionnement MDC™.</p></div></div>
+      <div class="step-row"><div class="step-num">02</div><div><h3>L'offre</h3><p>Transformez votre savoir-faire en parcours client structuré, avec des livrables identifiables à chaque étape.</p></div></div>
+      <div class="step-row"><div class="step-num">03</div><div><h3>Le prix</h3><p>Fixez un tarif ancré sur la valeur produite pour le client — et non plus sur votre temps passé.</p></div></div>
+      <div class="step-row"><div class="step-num">04</div><div><h3>La prospection</h3><p>Trouvez vos premiers rendez-vous qualifiés sans réseau, grâce au Script de Prise de Contact MDC™.</p></div></div>
+      <div class="step-row"><div class="step-num">05</div><div><h3>Le premier contrat</h3><p>Sécurisez votre lancement avec un Plan des 30 Jours séquencé, semaine par semaine, jusqu'à la signature.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="offre">
+  <div class="wrap">
+    <div class="pricing-box">
+      <div class="p-kicker">Édition numérique · PDF</div>
+      <h2 class="serif" style="font-size:22px; font-weight:600; margin-bottom:4px; color:#fff;">De l'Expert au Consultant Professionnel</h2>
+      <div class="price-row"><span class="price-now">{{ prix|floatformat:"0" }}&nbsp;FCFA</span></div>
+      <div style="font-size:12px; color:#8FB9DE;">Paiement unique — Mobile Money ou carte — accès immédiat</div>
+      <ul class="pbox-list">
+        <li>Ebook complet au format PDF (5 chapitres)</li>
+        <li>Les 5 outils propriétaires MDC™ inclus</li>
+        <li>5 exercices pratiques guidés</li>
+        <li>Annexe récapitulative des outils</li>
+        <li>Lecture sur ordinateur, tablette ou mobile</li>
+      </ul>
+
+      <div id="achat-erreur"></div>
+
+      <form id="form-achat">
+        {% csrf_token %}
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:4px;">
+          <div class="insc-field"><label>Prénom</label><input type="text" id="achat-prenom" required></div>
+          <div class="insc-field"><label>Email</label><input type="email" id="achat-email" required></div>
+        </div>
+        <button type="submit" class="btn btn-red" style="width:100%;" id="btn-payer">Payer et recevoir l'ebook — {{ prix|floatformat:"0" }} FCFA</button>
+      </form>
+
+      <div class="guarantee">Paiement sécurisé par Kkiapay · Livre envoyé par email et téléchargeable immédiatement</div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.kkiapay.me/k.js"></script>
+<script>
+  function getCookie(name){
+    const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return v ? v.pop() : '';
+  }
+
+  document.getElementById('form-achat').addEventListener('submit', function(e){
+    e.preventDefault();
+    const prenom = document.getElementById('achat-prenom').value.trim();
+    const email = document.getElementById('achat-email').value.trim();
+    const errBox = document.getElementById('achat-erreur');
+    errBox.style.display = 'none';
+    if(!prenom || !email){ return; }
+
+    openKkiapayWidget({
+      amount: {{ prix|floatformat:"0" }},
+      key: "{{ kkiapay_public_key }}",
+      sandbox: {{ kkiapay_sandbox|yesno:"true,false" }},
+      email: email,
+      phone: "",
+      data: JSON.stringify({ prenom: prenom, email: email })
+    });
+  });
+
+  addKkiapayListener('success', function(response){
+    const prenom = document.getElementById('achat-prenom').value.trim();
+    const email = document.getElementById('achat-email').value.trim();
+    const btn = document.getElementById('btn-payer');
+    btn.textContent = 'Vérification du paiement…';
+    btn.disabled = true;
+
+    fetch("/ebook/verifier-paiement/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie('csrftoken') },
+      body: JSON.stringify({ transactionId: response.transactionId, prenom: prenom, email: email }),
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirect;
+      } else {
+        const errBox = document.getElementById('achat-erreur');
+        errBox.textContent = data.error || "Le paiement n'a pas pu être confirmé. Contactez-nous si le montant a été débité.";
+        errBox.style.display = 'block';
+        btn.textContent = "Payer et recevoir l'ebook — {{ prix|floatformat:'0' }} FCFA";
+        btn.disabled = false;
+      }
+    })
+    .catch(() => {
+      const errBox = document.getElementById('achat-erreur');
+      errBox.textContent = "Erreur réseau lors de la vérification. Contactez-nous si le montant a été débité.";
+      errBox.style.display = 'block';
+      btn.textContent = "Payer et recevoir l'ebook — {{ prix|floatformat:'0' }} FCFA";
+      btn.disabled = false;
+    });
+  });
+
+  addKkiapayListener('failed', function(){
+    const errBox = document.getElementById('achat-erreur');
+    errBox.textContent = "Le paiement a échoué ou a été annulé.";
+    errBox.style.display = 'block';
+  });
+</script>
+
+<section class="section-tint">
+  <div class="wrap">
+    <div class="upsell">
+      <div class="upsell-grid">
+        <div class="upsell-num">90j</div>
+        <div>
+          <div class="ref" style="margin-bottom:8px;">Pour aller plus loin</div>
+          <h3 class="serif">L'ebook vous donne la méthode. Le Programme vous amène jusqu'au premier client.</h3>
+          <p>Le Programme Pilote de professionnalisation Cefiis-IDH reprend les 5 étapes de ce livre, mais avec un accompagnement individuel de 90 jours, jusqu'à la signature de votre première mission.</p>
+          <a href="/formations/" class="btn btn-red">Découvrir le Programme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="narrow">
+  <div class="ref">Questions fréquentes</div>
+  <h2 class="title">Avant de vous lancer</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q"><span>Sous quel format je reçois l'ebook ?</span><span class="plus">+</span></div>
+      <div class="faq-a">Un fichier PDF de 28 pages. Vous le recevez immédiatement par email après paiement, et vous pouvez aussi le télécharger directement depuis votre navigateur, sans attendre l'email.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>Est-ce adapté si je n'ai pas encore de client ?</span><span class="plus">+</span></div>
+      <div class="faq-a">Oui. Le livre est conçu pour les experts qui démarrent leur activité de conseil, aussi bien que pour ceux qui veulent restructurer une activité existante.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>Quelle différence avec le Programme Pilote ?</span><span class="plus">+</span></div>
+      <div class="faq-a">L'ebook vous donne la méthode et les outils à appliquer seul. Le Programme ajoute un accompagnement individuel de 90 jours pour la mise en œuvre complète, jusqu'au premier client.</div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2 class="serif">Votre positionnement, votre offre et votre premier client — en un seul livre</h2>
+    <p>{{ prix|floatformat:"0" }} FCFA · Format PDF · Accès immédiat</p>
+    <a href="#offre" class="btn btn-red">Télécharger l'ebook maintenant</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Cefiis-IDH — <a href="mailto:etiennegbedagbe@cefiis.com">etiennegbedagbe@cefiis.com</a></div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(i){ i.classList.remove('open'); });
+      if(!wasOpen){ item.classList.add('open'); }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -27,7 +27,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webinaire',
+    'ebook',
+    'vitrine',
+    'formations',
+     'blog',
 ]
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
+from decouple import config
+KKIAPAY_PUBLIC_KEY = config('KKIAPAY_PUBLIC_KEY')
+KKIAPAY_PRIVATE_KEY = config('KKIAPAY_PRIVATE_KEY')
+KKIAPAY_SECRET_KEY = config('KKIAPAY_SECRET_KEY')
+KKIAPAY_SANDBOX = config('KKIAPAY_SANDBOX', default=True, cast=bool)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

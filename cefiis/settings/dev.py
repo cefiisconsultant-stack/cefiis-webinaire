@@ -18,6 +18,10 @@ DATABASES = {
     }
 }
 
+# cefiis/settings/dev.py
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -25,3 +29,4 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 print(">> Chargement du fichier de configuration : DEV")
+

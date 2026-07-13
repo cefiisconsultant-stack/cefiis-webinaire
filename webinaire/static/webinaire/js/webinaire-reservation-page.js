@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Date cible du webinaire : 11 octobre 2025 à 16h00
-    const countdownDate = new Date("2026-07-11T16:00:00").getTime();
+    const countdownDate = new Date("2026-07-18T16:00:00").getTime();
 
     function getCookie(name) {
         let cookieValue = null;

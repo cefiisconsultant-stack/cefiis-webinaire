@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ article.titre }} — Blog Cefiis-IDH</title>
+<meta name="description" content="{{ article.extrait }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2D7DC1; --blue-deep:#1D5C93; --blue-pale:#EAF2F9;
+    --red:#C8102E; --ink:#122A43; --muted:#5B6B7C; --line:#D8E3EC; --paper:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ font-family:'Inter',sans-serif; color:var(--ink); background:var(--paper); line-height:1.62; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.serif{ font-family:'Source Serif 4',serif; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 24px; }
+  .narrow{ max-width:720px; margin:0 auto; padding:0 24px; }
+
+  .btn{ display:inline-block; padding:15px 30px; border-radius:2px; font-weight:600; font-size:14.5px;
+    text-decoration:none; border:1.5px solid transparent; cursor:pointer; }
+  .btn-outline{ background:transparent; color:var(--ink); border-color:var(--line); }
+  .btn-outline:hover{ border-color:var(--blue); color:var(--blue); }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); }
+  header .wrap{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand{ display:flex; align-items:center; gap:10px; color:var(--ink); font-family:'Source Serif 4',serif; font-weight:600; font-size:17px; text-decoration:none; }
+  .brand-logo{ height:28px; width:auto; flex:none; }
+  nav{ display:flex; gap:28px; }
+  nav a{ color:var(--muted); font-size:13.5px; text-decoration:none; font-weight:500; }
+  nav a.active{ color:var(--blue); }
+  nav a:hover{ color:var(--blue); }
+  @media (max-width:860px){ nav{ display:none; } }
+
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--blue); text-decoration:none; margin:40px 0 24px; }
+
+  .article-header .cat{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); text-transform:uppercase; letter-spacing:1.5px; font-weight:600; margin-bottom:16px; }
+  .article-header h1{ font-size:34px; line-height:1.28; margin-bottom:18px; color:var(--ink); }
+  .article-meta{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); padding-bottom:30px; border-bottom:1px solid var(--line); margin-bottom:36px; }
+
+  .article-image{ margin:0 0 40px; border-radius:4px; overflow:hidden; aspect-ratio:16/9; background:var(--blue-pale); }
+  .article-image img{ width:100%; height:100%; object-fit:cover; }
+  .article-image-placeholder{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px; }
+
+  .article-content p{ font-size:16px; color:#2C3B4E; margin-bottom:22px; }
+
+  .article-cta{ background:var(--blue-pale); border-radius:6px; padding:32px 30px; margin:50px 0; text-align:center; }
+  .article-cta h3{ font-size:19px; margin-bottom:10px; }
+  .article-cta p{ color:var(--muted); font-size:14px; margin-bottom:20px; }
+  .article-cta .btn-red{ background:var(--red); color:#fff; border:none; }
+
+  .autres{ padding:60px 0 90px; border-top:1px solid var(--line); margin-top:20px; }
+  .autres .ref{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); text-transform:uppercase; letter-spacing:2px; font-weight:600; margin-bottom:24px; }
+  .autres-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .autres-card{ text-decoration:none; color:var(--ink); }
+  .autres-thumb{ aspect-ratio:16/10; background:var(--blue-pale); border-radius:4px; overflow:hidden; margin-bottom:14px; }
+  .autres-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .autres-card h4{ font-size:14.5px; font-family:'Source Serif 4',serif; line-height:1.35; }
+  @media (max-width:760px){ .autres-grid{ grid-template-columns:1fr; } }
+
+  footer{ background:#fff; border-top:1px solid var(--line); padding:40px 0; font-size:12px; color:var(--muted); }
+  footer .wrap{ display:flex; flex-direction:column; align-items:center; gap:22px; text-align:center; }
+  footer a{ color:var(--blue); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="/" class="brand">
+      <img src="{% static 'vitrine/logo-cefiis.jpg' %}" alt="Cefiis-IDH" class="brand-logo">
+      Cefiis-IDH
+    </a>
+    <nav>
+      <a href="/#qui-sommes-nous">Qui sommes-nous</a>
+      <a href="/formations/">Nos offres</a>
+      <a href="/#realisations">Réalisations</a>
+      <a href="/#evenements">Événements</a>
+      <a href="/blog/" class="active">Blog</a>
+    </nav>
+    <a href="/" class="btn btn-outline">Retour à l'accueil</a>
+  </div>
+</header>
+
+<div class="narrow">
+  <a href="/blog/" class="back-link">← Tous les articles</a>
+
+  <div class="article-header">
+    {% if article.categorie %}<div class="cat">{{ article.categorie.nom }}</div>{% endif %}
+    <h1>{{ article.titre }}</h1>
+    <div class="article-meta">{{ article.auteur }} · {{ article.date_publication|date:"j F Y" }}{% if article.temps_lecture %} · {{ article.temps_lecture }} de lecture{% endif %}</div>
+  </div>
+
+  <div class="article-image">
+    {% if article.image %}
+      <img src="{{ article.image.url }}" alt="{{ article.titre }}">
+    {% else %}
+      <div class="article-image-placeholder">Image à ajouter</div>
+    {% endif %}
+  </div>
+
+  <div class="article-content">
+    {% for paragraphe in article.get_paragraphes %}
+    <p>{{ paragraphe }}</p>
+    {% endfor %}
+  </div>
+
+  <div class="article-cta">
+    <h3 class="serif">Envie d'aller plus loin ?</h3>
+    <p>Découvrez nos formations pour transformer votre expertise en activité de conseil.</p>
+    <a href="/formations/" class="btn btn-red">Voir nos formations</a>
+  </div>
+</div>
+
+{% if autres %}
+<section class="autres">
+  <div class="wrap">
+    <div class="ref">À lire aussi</div>
+    <div class="autres-grid">
+      {% for a in autres %}
+      <a href="{{ a.get_absolute_url }}" class="autres-card">
+        <div class="autres-thumb">
+          {% if a.image %}<img src="{{ a.image.url }}" alt="{{ a.titre }}">{% endif %}
+        </div>
+        <h4>{{ a.titre }}</h4>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex; gap:26px; flex-wrap:wrap; justify-content:center; font-weight:500; font-size:13.5px;">
+      <a href="https://wa.me/22997345232">WhatsApp</a>
+      <a href="tel:+22997345232">+229 97 34 52 32</a>
+      <a href="mailto:etiennegbedagbe@cefiis.com">etiennegbedagbe@cefiis.com</a>
+      <a href="https://facebook.com/VOTRE-PAGE">Facebook</a>
+    </div>
+    <div style="font-size:11px; color:var(--muted);">© 2026 Cefiis-IDH. Tous droits réservés.</div>
+  </div>
+</footer>
+
+</body>
+</html>
