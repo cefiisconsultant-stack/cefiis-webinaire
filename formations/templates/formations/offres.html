@@ -246,7 +246,9 @@
           {% if offer.discount_percent > 0 %}<span class="offer-price-old">{{ offer.price_barre_fcfa }} FCFA</span>{% endif %}
           <div class="offer-price">{{ offer.price_fcfa }} <span class="cur">FCFA</span></div>
           {% if offer.discount_percent > 0 %}<span class="offer-discount">-{{ offer.discount_percent }}%</span>{% endif %}
-          <a href="{{ offer.lien_inscription }}" class="btn btn-red">{% if offer.type_offre == 'document' %}Acheter{% else %}S'inscrire{% endif %}</a>
+          <button type="button" class="btn btn-red" onclick="openInscriptionModal({{ offer.id }}, '{{ offer.title|escapejs }}')">
+            {% if offer.type_offre == 'document' %}Acheter{% else %}S'inscrire{% endif %}
+          </button>
         </div>
       </div>
       {% empty %}
@@ -272,6 +274,21 @@
         <span class="label">Paliers, un seul parcours cohérent</span>
       </div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="text-align:center;">
+    <div class="ref" style="justify-content:center;">Aussi disponible</div>
+    <h2 class="title" style="margin:0 auto 16px; max-width:600px;">Retrouvez aussi nos formations sur ComeUp</h2>
+    <p class="desc" style="margin:0 auto 28px; max-width:560px;">
+      Découvrez nos services d'accompagnement RH et de conseil sur la plateforme ComeUp,
+      avec paiement sécurisé et livraison encadrée.
+    </p>
+    <a href="https://comeup.com/fr/service/493613/etre-le-partenaire-rh-au-quotidien-des-employes-et-collaborateurs"
+       target="_blank" rel="noopener" class="btn btn-outline">
+      Voir nos services sur ComeUp
+    </a>
   </div>
 </section>
 

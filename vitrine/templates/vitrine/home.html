@@ -118,7 +118,7 @@
   .real-gallery-track{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; height:100%; }
   .real-gallery-track::-webkit-scrollbar{ display:none; }
   .real-gallery-slide{ flex:0 0 100%; scroll-snap-align:start; aspect-ratio:4/3; }
-  .real-gallery-slide img{ width:100%; height:100%; object-fit:cover; }
+  .real-gallery-slide img{ width:100%; height:100%; object-fit:contain; background:#fff; }
   .real-gallery-placeholder{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px; text-align:center; padding:20px; }
   .real-gallery-nav{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:2; }
   .real-gallery-dot{ width:6px; height:6px; border-radius:50%; background:rgba(18,42,67,.25); }
@@ -308,8 +308,8 @@
         {% endfor %}
         {% endfor %}
       </div>
-      <button class="real-arrow prev" onclick="document.getElementById('gallery-{{ r.id }}').scrollBy({left:-9999,behavior:'smooth'})">‹</button>
-      <button class="real-arrow next" onclick="document.getElementById('gallery-{{ r.id }}').scrollBy({left:9999,behavior:'smooth'})">›</button>
+      <button class="real-arrow prev" onclick="(function(el){ el.scrollBy({left:-el.clientWidth, behavior:'smooth'}); })(document.getElementById('gallery-{{ r.id }}'))">‹</button>
+      <button class="real-arrow next" onclick="(function(el){ el.scrollBy({left:el.clientWidth, behavior:'smooth'}); })(document.getElementById('gallery-{{ r.id }}'))">›</button>
     </div>
 
     <div class="real-content">
