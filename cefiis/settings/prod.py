@@ -1,6 +1,6 @@
 # SECURITY WARNING: don't run with debug turned on in production!
 from .base import *
-ALLOWED_HOSTS = ['webinaire.cefiis.com', '187.124.222.239', 'ebook.cefiis.com']
+ALLOWED_HOSTS = ['webinaire.cefiis.com', 'cefiis.com', 'www.cefiis.com', '187.124.222.239', 'ebook.cefiis.com']
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # remonter d’un dossier en plus pour avoir la racine souhaitée
