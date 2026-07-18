@@ -60,6 +60,8 @@ def send_webinaire_confirmation_email(reservation):
 @csrf_exempt
 def reservation_webinaire(request):
     if request.method == "POST":
+        if not settings.INSCRIPTIONS_WEBINAIRE_OUVERTES:
+            return JsonResponse({"success": False, "error": "Les inscriptions sont actuellement fermées."}, status=403)
         try:
             data = json.loads(request.body.decode("utf-8"))
             
@@ -126,6 +128,8 @@ def reservation_webinaire(request):
     return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
 def webinaire_page_c(request):
+    if not settings.INSCRIPTIONS_WEBINAIRE_OUVERTES:
+        return render(request, 'webinaire/inscriptions-fermees.html')
     return render(request, 'webinaire/inscription-webinaire-c.html')
 
 # def email_open(request):
