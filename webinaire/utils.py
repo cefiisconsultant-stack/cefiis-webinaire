@@ -204,11 +204,12 @@ def send_soap_opera_email4_to_all():
 def envoyer_lien_webinaire_3h(email_test=None, lien_webinaire='https://meet.google.com/mha-xmqm-hgu'):
     """
     Envoie l'email contenant le lien de connexion.
+    Sans --email, cible uniquement les inscrits qui ne l'ont pas encore reçu.
     """
     if email_test:
         inscrits = ReservationWebinaire.objects.filter(email=email_test)
     else:
-        inscrits = ReservationWebinaire.objects.all()
+        inscrits = ReservationWebinaire.objects.filter(lien_3h_envoye=False)
 
     for inscrit in inscrits:
         context = {
@@ -228,5 +229,8 @@ def envoyer_lien_webinaire_3h(email_test=None, lien_webinaire='https://meet.goog
         try:
             msg.send(fail_silently=False)
             print(f"✅ Lien envoyé à {inscrit.email}")
+            if not email_test:
+                inscrit.lien_3h_envoye = True
+                inscrit.save(update_fields=["lien_3h_envoye"])
         except Exception as e:
             print(f"❌ Erreur pour {inscrit.email} : {e}")

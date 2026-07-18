@@ -32,6 +32,7 @@ class ReservationWebinaire(models.Model):
     )
     dans_sequence_opera = models.BooleanField(default=False)
     niveau_sequence = models.PositiveIntegerField(default=0)
+    lien_3h_envoye = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.prenom} {self.nom} - {self.email}"
