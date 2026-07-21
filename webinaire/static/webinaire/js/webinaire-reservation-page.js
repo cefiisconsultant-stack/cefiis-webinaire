@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Capture et stockage des UTM depuis l'URL
+    (function() {
+        const keys = ["utm_source","utm_medium","utm_campaign","gclid"];
+        const p = new URLSearchParams(location.search);
+        keys.forEach(k => { const v = p.get(k); if (v) sessionStorage.setItem(k, v); });
+    })();
+
     // Date cible du webinaire : 11 octobre 2025 à 16h00
     const countdownDate = new Date("2026-07-18T16:00:00").getTime();
 
@@ -134,8 +141,12 @@ document.addEventListener('DOMContentLoaded', function() {
             prenom: formData.get('prenom').trim(),
             email: formData.get('email').trim(),
             profession: formData.get('profession').trim(),
-            nom: '',                         // facultatif, le modèle accepte désormais une chaîne vide
-            niveau_etude: 'Non spécifié'     // valeur par défaut
+            nom: '',
+            niveau_etude: 'Non spécifié',
+            utm_source:   sessionStorage.getItem('utm_source')   || '',
+            utm_medium:   sessionStorage.getItem('utm_medium')   || '',
+            utm_campaign: sessionStorage.getItem('utm_campaign') || '',
+            gclid:        sessionStorage.getItem('gclid')        || '',
         };
 
         // Validation basique côté client

@@ -110,7 +110,11 @@ def reservation_webinaire(request):
                 prenom=prenom,
                 nom=nom,
                 profession=profession,
-                niveau_etude=niveau_etude
+                niveau_etude=niveau_etude,
+                utm_source=escape(data.get("utm_source", "").strip()),
+                utm_medium=escape(data.get("utm_medium", "").strip()),
+                utm_campaign=escape(data.get("utm_campaign", "").strip()),
+                gclid=escape(data.get("gclid", "").strip()),
             )
             
             message = "Nouvelle réservation enregistrée."

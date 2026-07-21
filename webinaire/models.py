@@ -33,6 +33,10 @@ class ReservationWebinaire(models.Model):
     dans_sequence_opera = models.BooleanField(default=False)
     niveau_sequence = models.PositiveIntegerField(default=0)
     lien_3h_envoye = models.BooleanField(default=False)
+    utm_source   = models.CharField(max_length=50,  blank=True, default="")
+    utm_medium   = models.CharField(max_length=50,  blank=True, default="")
+    utm_campaign = models.CharField(max_length=100, blank=True, default="")
+    gclid        = models.CharField(max_length=255, blank=True, default="")
 
     def __str__(self):
         return f"{self.prenom} {self.nom} - {self.email}"

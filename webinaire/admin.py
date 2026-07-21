@@ -3,6 +3,7 @@ from .models import *
 
 @admin.register(ReservationWebinaire)
 class ReservationWebinaireAdmin(admin.ModelAdmin):
+    readonly_fields = ('utm_source', 'utm_medium', 'utm_campaign', 'gclid')
     list_display = ("prenom", "nom", "email", "profession", "date_inscription", "dans_sequence_opera", "niveau_sequence", "niveau_etude")
     search_fields = ("prenom", "nom", "email", "profession")
     list_filter = ("profession", "date_inscription")
