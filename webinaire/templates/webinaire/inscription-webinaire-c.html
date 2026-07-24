@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %}{% load webinaire_tags %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -479,6 +479,7 @@
         </div>
     </footer>
 
+    <script>window.WEBINAIRE_DATE_ISO = "{% webinaire_date_iso %}";</script>
     <script src="{% static 'webinaire/js/webinaire-reservation-page.js' %}"></script>
 </body>
 </html>

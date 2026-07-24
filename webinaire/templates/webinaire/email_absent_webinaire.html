@@ -1,3 +1,4 @@
+{% load webinaire_tags %}
 <!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,8 +31,8 @@ body{margin:0;padding:0;background:#f5f7fa;font-family:'Inter',Arial,sans-serif;
     <div class="question"><p>① Qu'est-ce qui vous a empêché d'assister ?<br><span style="font-weight:400;font-size:13px;">(horaire, oubli, rappel pas vu, autre raison ?)</span></p></div>
     <div class="question"><p>② Qu'est-ce qui vous aurait fait venir ?</p></div>
     <p style="margin-top:20px;">Répondez simplement à cet email — votre retour nous aide directement à organiser la prochaine session.</p>
-    <p>Le prochain webinaire est prévu le <strong>samedi 1er août</strong>. On vous y réserve une place prioritaire si vous le souhaitez.</p>
-    <div class="cta"><a href="https://wa.me/22997345232">Je veux une place pour le 1er août →</a></div>
+    <p>Le prochain webinaire est prévu le <strong>{% webinaire_date %}</strong>. On vous y réserve une place prioritaire si vous le souhaitez.</p>
+    <div class="cta"><a href="https://wa.me/22997345232">Je veux une place pour le {% webinaire_date %} →</a></div>
   </div>
   <div class="footer">
     Cefiis-IDH · +229 97 34 52 32 · <a href="mailto:etiennegbedagbe@cefiis.com">etiennegbedagbe@cefiis.com</a><br>

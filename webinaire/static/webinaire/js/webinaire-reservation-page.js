@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
         keys.forEach(k => { const v = p.get(k); if (v) sessionStorage.setItem(k, v); });
     })();
 
-    // Date cible du webinaire : 11 octobre 2025 à 16h00
-    const countdownDate = new Date("2026-08-01T16:00:00").getTime();
+    // Date cible du webinaire : 1er août 2026 à 16h00
+    const countdownDate = new Date(window.WEBINAIRE_DATE_ISO || "2026-08-01T16:00:00").getTime();
 
     function getCookie(name) {
         let cookieValue = null;
