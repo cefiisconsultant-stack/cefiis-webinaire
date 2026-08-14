@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'diagnostic',
     'formations',
     'blog',
-    'diagnostic',
+    
 ]
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
@@ -45,6 +45,18 @@ WEBINAIRE_DATE_AFFICHAGE = config('WEBINAIRE_DATE_AFFICHAGE', default='Samedi 1e
 KKIAPAY_PRIVATE_KEY = config('KKIAPAY_PRIVATE_KEY')
 KKIAPAY_SECRET_KEY = config('KKIAPAY_SECRET_KEY')
 KKIAPAY_SANDBOX = config('KKIAPAY_SANDBOX', default=True, cast=bool)
+
+# Réglages ebook
+EBOOK_GUARANTEE_ENABLED = False
+EBOOK_GUARANTEE_TEXT = (
+    "Garantie satisfait ou remboursé pendant 7 jours. "
+    "Si l'ebook ne vous apporte pas de valeur, écrivez-nous et nous vous remboursons intégralement."
+)
+
+# Liens WhatsApp pour le diagnostic / ebook
+DIAGNOSTIC_WHATSAPP_GROUP_NAME = "De l'Expert au Consultant — Cefiis"
+DIAGNOSTIC_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/IJi96yhLhyYJjOPtWFKwtN"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
