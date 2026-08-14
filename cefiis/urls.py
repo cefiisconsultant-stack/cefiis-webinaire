@@ -14,6 +14,7 @@ urlpatterns = [
     path("formations/", include("formations.urls")),
     path("blog/", include("blog.urls")),          # <-- cette ligne manque actuellement
     path("", include("vitrine.urls")),
+    path("diagnostic/", include("diagnostic.urls")),
 ]
 
 if settings.DEBUG:
