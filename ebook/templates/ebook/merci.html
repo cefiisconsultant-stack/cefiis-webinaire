@@ -6,10 +6,15 @@
 <style>
   body{ font-family:'Inter',sans-serif; background:#16233A; color:#F7F3E9; min-height:100vh;
         display:flex; align-items:center; justify-content:center; text-align:center; margin:0; padding:24px; }
-  .box{ max-width:480px; }
+  .box{ max-width:620px; }
   h1{ font-family:'Fraunces',serif; font-size:28px; margin-bottom:16px; }
-  p{ color:#B9C2D0; margin-bottom:28px; line-height:1.6; }
-  a.btn{ background:#B08D57; color:#1B140A; padding:16px 32px; border-radius:3px; text-decoration:none; font-weight:700; }
+  p{ color:#B9C2D0; margin:0 0 28px; line-height:1.6; }
+  a.btn{ display:inline-block; background:#B08D57; color:#1B140A; padding:16px 32px; border-radius:3px; text-decoration:none; font-weight:700; }
+  .community{ margin-top:38px; padding:24px; border:1px solid rgba(176,141,87,.5); border-radius:12px; background:rgba(255,255,255,.04); }
+  .community small{ color:#E7C993; text-transform:uppercase; letter-spacing:.12em; }
+  .community h2{ font-family:'Fraunces',serif; font-size:22px; margin:10px 0; }
+  .community p{ margin-bottom:20px; }
+  a.secondary{ color:#F7F3E9; text-underline-offset:4px; font-weight:700; }
 </style>
 </head>
 <body>
@@ -17,6 +22,28 @@
     <h1>Merci {{ achat.prenom }} 🎉</h1>
     <p>Votre paiement a été confirmé. Votre ebook est prêt — vous en recevrez aussi une copie par email à {{ achat.email }}.</p>
     <a class="btn" href="{% url 'telecharger_ebook' achat.token_telechargement %}">Télécharger mon ebook</a>
+    <section class="community">
+      <small>Accès volontaire</small>
+      <h2>{{ groupe_nom }}</h2>
+      <p>Retrouvez les experts ayant terminé le diagnostic dans un espace unique d’échanges et de ressources.</p>
+      <a id="whatsapp-group" class="secondary" href="{{ groupe_url }}" target="_blank" rel="noopener">Rejoindre le groupe WhatsApp ↗</a>
+    </section>
   </div>
+  {% if achat.diagnostic_session_id %}
+  <script>
+    document.getElementById('whatsapp-group').addEventListener('click', function () {
+      const payload = JSON.stringify({
+        session_id: '{{ achat.diagnostic_session_id }}',
+        nom: 'whatsapp_click',
+        ecran: 'merci'
+      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('{{ tracking_url }}', new Blob([payload], {type: 'application/json'}));
+      } else {
+        fetch('{{ tracking_url }}', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: payload, keepalive: true});
+      }
+    });
+  </script>
+  {% endif %}
 </body>
 </html>

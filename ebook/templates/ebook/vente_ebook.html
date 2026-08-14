@@ -222,6 +222,8 @@
 
       <form id="form-achat">
         {% csrf_token %}
+        <input type="hidden" id="achat-diagnostic" value="{{ diagnostic_id }}">
+        <input type="hidden" id="achat-diagnostic-session" value="{{ diagnostic_session }}">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:4px;">
           <div class="insc-field"><label>Prénom</label><input type="text" id="achat-prenom" required></div>
           <div class="insc-field"><label>Email</label><input type="email" id="achat-email" required></div>
@@ -230,6 +232,7 @@
       </form>
 
       <div class="guarantee">Paiement sécurisé par Kkiapay · Livre envoyé par email et téléchargeable immédiatement</div>
+      {% if guarantee_enabled and guarantee_text %}<div class="guarantee">{{ guarantee_text }}</div>{% endif %}
     </div>
   </div>
 </section>
@@ -250,7 +253,7 @@
     if(!prenom || !email){ return; }
 
     openKkiapayWidget({
-      amount: {{ prix|floatformat:"0" }},
+      amount: {{ prix }},
       key: "{{ kkiapay_public_key }}",
       sandbox: {{ kkiapay_sandbox|yesno:"true,false" }},
       email: email,
@@ -269,7 +272,7 @@
     fetch("/ebook/verifier-paiement/", {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie('csrftoken') },
-      body: JSON.stringify({ transactionId: response.transactionId, prenom: prenom, email: email }),
+      body: JSON.stringify({ transactionId: response.transactionId, prenom: prenom, email: email, diagnosticId: document.getElementById('achat-diagnostic').value, diagnosticSession: document.getElementById('achat-diagnostic-session').value }),
     })
     .then(r => r.json())
     .then(data => {
