@@ -1,0 +1,31 @@
+PAYS_AFRIQUE_FRANCOPHONE = [
+    ("DZ", "🇩🇿 Algérie", "+213"),
+    ("BJ", "🇧🇯 Bénin", "+229"),
+    ("BF", "🇧🇫 Burkina Faso", "+226"),
+    ("BI", "🇧🇮 Burundi", "+257"),
+    ("CM", "🇨🇲 Cameroun", "+237"),
+    ("CF", "🇨🇫 Centrafrique", "+236"),
+    ("KM", "🇰🇲 Comores", "+269"),
+    ("CG", "🇨🇬 Congo", "+242"),
+    ("CD", "🇨🇩 Congo (RDC)", "+243"),
+    ("CI", "🇨🇮 Côte d’Ivoire", "+225"),
+    ("DJ", "🇩🇯 Djibouti", "+253"),
+    ("GA", "🇬🇦 Gabon", "+241"),
+    ("GN", "🇬🇳 Guinée", "+224"),
+    ("GQ", "🇬🇶 Guinée équatoriale", "+240"),
+    ("MG", "🇲🇬 Madagascar", "+261"),
+    ("ML", "🇲🇱 Mali", "+223"),
+    ("MA", "🇲🇦 Maroc", "+212"),
+    ("MU", "🇲🇺 Maurice", "+230"),
+    ("MR", "🇲🇷 Mauritanie", "+222"),
+    ("NE", "🇳🇪 Niger", "+227"),
+    ("RW", "🇷🇼 Rwanda", "+250"),
+    ("SN", "🇸🇳 Sénégal", "+221"),
+    ("SC", "🇸🇨 Seychelles", "+248"),
+    ("TD", "🇹🇩 Tchad", "+235"),
+    ("TG", "🇹🇬 Togo", "+228"),
+    ("TN", "🇹🇳 Tunisie", "+216"),
+]
+
+PAYS_CHOICES = [(code, nom) for code, nom, _ in PAYS_AFRIQUE_FRANCOPHONE]
+INDICATIFS = {code: indicatif for code, _, indicatif in PAYS_AFRIQUE_FRANCOPHONE}

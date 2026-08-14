@@ -1,0 +1,218 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Diagnostic Consultant — Maison du Consultant</title>
+  <meta name="description" content="En 2 minutes, découvrez comment transformer votre expertise en activité de conseil.">
+  <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}">
+  {% if ga4_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id|urlencode }}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ ga4_id|escapejs }}',{anonymize_ip:true});</script>
+  {% endif %}
+</head>
+<body class="quiz-page"
+      data-submit-url="{% url 'diagnostic:enregistrer' %}"
+      data-event-url="{% url 'diagnostic:evenement' %}"
+      data-ebook-url="{{ ebook_url }}">
+  <form class="csrf-token" aria-hidden="true">{% csrf_token %}</form>
+
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Cefiis, Maison du Consultant">
+      <span class="brand-mark">C</span>
+      <span><b>Cefiis</b><small>Maison du Consultant</small></span>
+    </a>
+    <span class="header-note"><i></i> Diagnostic confidentiel · 2 min</span>
+  </header>
+
+  <main class="quiz-shell">
+    <aside class="quiz-context">
+      <div class="eyebrow blue">Diagnostic d’expertise</div>
+      <h1>Votre expérience peut-elle devenir une activité de conseil&nbsp;?</h1>
+      <p>En 7 questions, identifiez votre niveau de préparation et l’étape qui vous ferait avancer maintenant.</p>
+      <div class="trust-list">
+        <span>✓ Résultat immédiat</span>
+        <span>✓ Conseils personnalisés</span>
+        <span>✓ Aucune bonne ou mauvaise réponse</span>
+      </div>
+      <blockquote>« Un expert sait faire. Un consultant transforme ce savoir-faire en résultat qu’un client peut acheter. »</blockquote>
+    </aside>
+
+    <section class="quiz-card" aria-live="polite">
+      <div class="progress-head"><span id="progress-label">Votre point de départ</span><b id="progress-value">4%</b></div>
+      <div class="progress-track"><span id="progress-fill" style="width:4%"></span></div>
+      <div class="error" id="error" role="alert" hidden></div>
+
+      <div class="screen active" data-screen="intro">
+        <div class="screen-number">01</div>
+        <h2>Commençons simplement.</h2>
+        <p class="screen-intro">Votre résultat sera personnalisé. Comment devons-nous vous appeler&nbsp;?</p>
+        <label class="field-label" for="prenom">Votre prénom</label>
+        <input class="text-input" id="prenom" name="prenom" autocomplete="given-name" placeholder="Ex. Étienne" maxlength="100">
+      </div>
+
+      <div class="screen" data-screen="ebook">
+        <div class="teaser">
+          <div class="mini-book" aria-hidden="true"><span>Guide</span><b>De l’Expert<br>au Consultant<br>Professionnel</b><small>Cefiis</small></div>
+          <div>
+            <div class="eyebrow red">La méthode complète existe déjà</div>
+            <h2><span data-prenom></span>, gardez cette ressource pour la suite.</h2>
+            <p class="screen-intro">Le diagnostic vous indiquera quoi travailler. Ce guide explique comment construire votre positionnement, votre offre, vos tarifs et votre prospection.</p>
+            <div class="teaser-price"><b>2 000 FCFA</b><span>Guide numérique · accès immédiat</span></div>
+            <a href="{{ ebook_url }}" target="_blank" rel="noopener" data-track="ebook_click">Voir le contenu de l’ebook ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="domaine">
+        <div class="screen-number">01</div>
+        <h2>Dans quel domaine avez-vous développé votre expertise&nbsp;?</h2>
+        <p class="screen-intro">Choisissez le domaine qui représente le mieux votre expérience principale.</p>
+        <label class="field-label" for="domaine">Domaine d’expertise</label>
+        <select class="select-input" id="domaine" name="domaine">
+          <option value="">Sélectionnez votre domaine</option>
+          <option value="rh">Ressources humaines</option><option value="projet">Gestion de projet</option>
+          <option value="finance">Finance &amp; comptabilité</option><option value="education">Éducation &amp; formation</option>
+          <option value="sante">Santé</option><option value="agri">Agriculture &amp; agro-industrie</option>
+          <option value="logistique">Logistique &amp; transport</option><option value="communication">Communication &amp; marketing</option>
+          <option value="numerique">Informatique &amp; numérique</option><option value="droit">Droit &amp; administration</option>
+          <option value="developpement">Développement &amp; ONG</option><option value="autre">Autre domaine</option>
+        </select>
+        <div class="followup-field" data-followup="domaine-autre">
+          <label class="field-label" for="domaine-autre">Précisez votre domaine</label>
+          <input class="text-input" id="domaine-autre" maxlength="150" placeholder="Votre domaine">
+        </div>
+      </div>
+
+      <div class="screen" data-screen="experience">
+        <div class="screen-number">02</div><h2>Depuis combien d’années exercez-vous dans ce domaine&nbsp;?</h2>
+        <p class="screen-intro">Comptez vos expériences salariées, entrepreneuriales et associatives.</p>
+        <div class="choices" data-choice="experience" role="radiogroup">
+          <button type="button" class="choice" data-value="moins5"><span class="choice-mark"></span><strong>Moins de 5 ans</strong></button>
+          <button type="button" class="choice" data-value="5a10"><span class="choice-mark"></span><strong>5 à 10 ans</strong></button>
+          <button type="button" class="choice" data-value="10a20"><span class="choice-mark"></span><strong>10 à 20 ans</strong></button>
+          <button type="button" class="choice" data-value="plus20"><span class="choice-mark"></span><strong>Plus de 20 ans</strong></button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="situation">
+        <div class="screen-number">03</div><h2>Quelle est votre situation aujourd’hui&nbsp;?</h2>
+        <p class="screen-intro">Cette réponse adapte la suite du diagnostic à votre réalité.</p>
+        <div class="choices two-columns" data-choice="situation" role="radiogroup">
+          <button type="button" class="choice" data-value="poste"><span class="choice-mark"></span><strong>En poste, salarié(e)</strong></button>
+          <button type="button" class="choice" data-value="entrepreneur"><span class="choice-mark"></span><strong>Entrepreneur(e)</strong></button>
+          <button type="button" class="choice" data-value="fin_contrat"><span class="choice-mark"></span><strong>En fin de contrat ou de projet</strong></button>
+          <button type="button" class="choice" data-value="retraite"><span class="choice-mark"></span><strong>Proche de la retraite</strong></button>
+          <button type="button" class="choice" data-value="etudiant"><span class="choice-mark"></span><strong>Étudiant(e) ou jeune diplômé(e)</strong></button>
+          <button type="button" class="choice" data-value="sans_emploi"><span class="choice-mark"></span><strong>Sans emploi actuellement</strong></button>
+          <button type="button" class="choice" data-value="consultant"><span class="choice-mark"></span><strong>Déjà consultant(e)</strong></button>
+          <button type="button" class="choice" data-value="autre"><span class="choice-mark"></span><strong>Autre situation</strong></button>
+        </div>
+        <div class="followup-field" data-followup="situation-autre"><label class="field-label" for="situation-autre">Précisez votre situation</label><input class="text-input" id="situation-autre" maxlength="150" placeholder="Décrivez-la en quelques mots"></div>
+      </div>
+
+      <div class="screen" data-screen="anciennete">
+        <div class="screen-number">+</div><h2>Depuis combien de temps exercez-vous comme consultant(e)&nbsp;?</h2>
+        <p class="screen-intro">Cela distingue un lancement récent d’une activité déjà installée.</p>
+        <div class="choices" data-choice="anciennete_consultant" role="radiogroup">
+          <button type="button" class="choice" data-value="moins1"><span class="choice-mark"></span><strong>Moins d’un an</strong></button>
+          <button type="button" class="choice" data-value="1a3"><span class="choice-mark"></span><strong>1 à 3 ans</strong></button>
+          <button type="button" class="choice" data-value="plus3"><span class="choice-mark"></span><strong>Plus de 3 ans</strong></button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="sollicitation">
+        <div class="screen-number">04</div><h2>Vous a-t-on déjà demandé une analyse ou un avis technique sans vous payer&nbsp;?</h2>
+        <p class="screen-intro">Ces demandes informelles sont souvent le premier signal d’un marché.</p>
+        <div class="choices" data-choice="sollicitation" role="radiogroup">
+          <button type="button" class="choice" data-value="souvent"><span class="choice-mark"></span><strong>Oui, souvent</strong></button>
+          <button type="button" class="choice" data-value="parfois"><span class="choice-mark"></span><strong>Oui, quelques fois</strong></button>
+          <button type="button" class="choice" data-value="jamais"><span class="choice-mark"></span><strong>Pas encore</strong></button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="motivation">
+        <div class="screen-number">05</div><h2>Qu’est-ce qui vous attire le plus dans le métier de consultant&nbsp;?</h2>
+        <p class="screen-intro">Un seul choix : celui qui compte le plus pour vous aujourd’hui.</p>
+        <div class="choices" data-choice="motivation" role="radiogroup">
+          <button type="button" class="choice" data-value="remuneration"><span class="choice-mark"></span><strong>Mieux gagner ma vie</strong></button>
+          <button type="button" class="choice" data-value="independance"><span class="choice-mark"></span><strong>Ne plus dépendre d’un seul employeur</strong></button>
+          <button type="button" class="choice" data-value="liberte"><span class="choice-mark"></span><strong>Être plus libre dans mon organisation</strong></button>
+          <button type="button" class="choice" data-value="valorisation"><span class="choice-mark"></span><strong>Faire payer une expertise construite pendant des années</strong></button>
+          <button type="button" class="choice" data-value="apres_carriere"><span class="choice-mark"></span><strong>Construire une activité après ma carrière</strong></button>
+          <button type="button" class="choice" data-value="impact"><span class="choice-mark"></span><strong>Avoir plus d’impact dans mon secteur</strong></button>
+          <button type="button" class="choice" data-value="autre"><span class="choice-mark"></span><strong>Une autre motivation</strong></button>
+        </div>
+        <div class="followup-field" data-followup="motivation-autre"><label class="field-label" for="motivation-autre">Précisez votre motivation</label><input class="text-input" id="motivation-autre" maxlength="200" placeholder="Ce que vous recherchez avant tout"></div>
+      </div>
+
+      <div class="screen" data-screen="elements">
+        <div class="screen-number">06</div><h2>Quels éléments avez-vous déjà définis&nbsp;?</h2>
+        <p class="screen-intro">Vous pouvez sélectionner plusieurs réponses.</p>
+        <div class="choices" data-choice="elements" data-multiple="true" role="group">
+          <button type="button" class="choice" data-value="positionnement"><span class="choice-mark"></span><span><strong>Un positionnement précis</strong><small>le problème que vous résolvez et pour qui</small></span></button>
+          <button type="button" class="choice" data-value="offre"><span class="choice-mark"></span><span><strong>Une offre structurée</strong><small>les étapes et livrables proposés au client</small></span></button>
+          <button type="button" class="choice" data-value="tarifs"><span class="choice-mark"></span><span><strong>Une grille tarifaire</strong><small>des prix construits et justifiables</small></span></button>
+          <button type="button" class="choice" data-value="prospection"><span class="choice-mark"></span><span><strong>Une méthode de prospection</strong><small>une façon régulière de trouver des clients</small></span></button>
+          <button type="button" class="choice" data-value="aucun"><span class="choice-mark"></span><strong>Aucun pour le moment</strong></button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="difficulte">
+        <div class="screen-number">07</div><h2 id="difficulty-title">Selon vous, quel est le principal obstacle pour devenir consultant&nbsp;?</h2>
+        <p class="screen-intro">Votre réponse déterminera le conseil personnalisé de votre résultat.</p>
+        <div class="choices difficulty-standard" data-choice="difficulte" role="radiogroup">
+          <button type="button" class="choice" data-value="reseau"><span class="choice-mark"></span><strong>Avoir un réseau et des relations</strong></button>
+          <button type="button" class="choice" data-value="vendre"><span class="choice-mark"></span><strong>Savoir me vendre sans être commercial(e)</strong></button>
+          <button type="button" class="choice" data-value="prix"><span class="choice-mark"></span><strong>Fixer un prix et le défendre</strong></button>
+          <button type="button" class="choice" data-value="temps"><span class="choice-mark"></span><strong>Trouver le temps en ayant déjà un emploi</strong></button>
+          <button type="button" class="choice" data-value="credibilite"><span class="choice-mark"></span><strong>Être crédible face aux cabinets établis</strong></button>
+          <button type="button" class="choice" data-value="autre"><span class="choice-mark"></span><strong>Une autre difficulté</strong></button>
+        </div>
+        <div class="choices difficulty-consultant" data-choice="difficulte" role="radiogroup" hidden>
+          <button type="button" class="choice" data-value="missions"><span class="choice-mark"></span><strong>Trouver des missions régulièrement</strong></button>
+          <button type="button" class="choice" data-value="tarifs"><span class="choice-mark"></span><strong>Facturer mes missions à leur juste valeur</strong></button>
+          <button type="button" class="choice" data-value="offre"><span class="choice-mark"></span><strong>Structurer une offre claire</strong></button>
+          <button type="button" class="choice" data-value="gestion"><span class="choice-mark"></span><strong>Gérer plusieurs clients en même temps</strong></button>
+          <button type="button" class="choice" data-value="gros_contrats"><span class="choice-mark"></span><strong>Passer des petites missions aux gros contrats</strong></button>
+          <button type="button" class="choice" data-value="autre"><span class="choice-mark"></span><strong>Une autre difficulté</strong></button>
+        </div>
+        <div class="followup-field" data-followup="difficulte-autre"><label class="field-label" for="difficulte-autre">Précisez votre difficulté</label><input class="text-input" id="difficulte-autre" maxlength="250" placeholder="Votre principal obstacle"></div>
+      </div>
+
+      <div class="screen" data-screen="contact">
+        <div class="result-ready"><span>✓</span><div><h2><span data-prenom></span>, votre analyse est prête.</h2><p class="screen-intro">Indiquez votre WhatsApp pour afficher le résultat et recevoir les ressources correspondant à votre situation.</p></div></div>
+        <label class="field-label" for="numero-national">Numéro WhatsApp</label>
+        <div class="phone-row">
+          <select id="pays" aria-label="Pays et indicatif">
+            {% for code, nom, indicatif in pays %}<option value="{{ code }}" data-dial="{{ indicatif }}" {% if code == 'BJ' %}selected{% endif %}>{{ nom }} ({{ indicatif }})</option>{% endfor %}
+          </select>
+          <span id="indicatif">+229</span>
+          <input id="numero-national" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="01 97 34 52 32" maxlength="24">
+        </div>
+        <label class="field-label followup" for="email">Email <span>Facultatif</span></label>
+        <input class="text-input" id="email" type="email" autocomplete="email" placeholder="vous@exemple.com" maxlength="254">
+        <div class="consent-list">
+          <label class="consent-item required-consent">
+            <input id="consentement-diagnostic" type="checkbox">
+            <span>J’accepte que ce numéro soit utilisé pour afficher et me transmettre mon diagnostic.</span>
+          </label>
+          <label class="consent-item">
+            <input id="consentement-marketing" type="checkbox">
+            <span>Je souhaite aussi recevoir occasionnellement les conseils et offres de Cefiis sur WhatsApp. <small>Facultatif</small></span>
+          </label>
+        </div>
+        <p class="privacy-note"><span>⌁</span> Vos informations ne sont jamais vendues. Vous pouvez demander l’arrêt des messages à tout moment.</p>
+      </div>
+
+      <div class="actions">
+        <button class="back-button" id="back" type="button" hidden>← Retour</button>
+        <button class="primary-button" id="next" type="button">Commencer le diagnostic <span>→</span></button>
+      </div>
+      <div class="keyboard-hint">Vos réponses sont enregistrées uniquement lorsque vous terminez.</div>
+    </section>
+  </main>
+  <script src="{% static 'diagnostic/diagnostic.js' %}" defer></script>
+</body>
+</html>

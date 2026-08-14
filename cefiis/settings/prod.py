@@ -1,26 +1,31 @@
-# SECURITY WARNING: don't run with debug turned on in production!
-from .base import *
-ALLOWED_HOSTS = ['webinaire.cefiis.com', 'cefiis.com', 'www.cefiis.com', '187.124.222.239', 'ebook.cefiis.com']
+from decouple import config
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# remonter d’un dossier en plus pour avoir la racine souhaitée
-ROOT_DIR = os.path.dirname(BASE_DIR)
+from .base import *
+
 
 DEBUG = False
+SECRET_KEY = config('SECRET_KEY')
 
-MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+ALLOWED_HOSTS = [
+    'webinaire.cefiis.com',
+    'cefiis.com',
+    'www.cefiis.com',
+    'ebook.cefiis.com',
+    'diagnostic.cefiis.com',
+    '187.124.222.239',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://cefiis.com',
+    'https://www.cefiis.com',
+    'https://webinaire.cefiis.com',
+    'https://ebook.cefiis.com',
+    'https://diagnostic.cefiis.com',
+]
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
-MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-from decouple import config
+STATIC_ROOT = BASE_DIR / 'static'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
@@ -29,7 +34,7 @@ EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
-SERVER_EMAIL = config('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = config('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 DATABASES = {
     'default': {
@@ -42,7 +47,13 @@ DATABASES = {
     }
 }
 
-print(">> Chargement du fichier de configuration : PROD")
-
-
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=3600, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
+    'SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False, cast=bool
+)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'

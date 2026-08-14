@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Votre diagnostic — Maison du Consultant</title>
+  <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}">
+  {% if ga4_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id|urlencode }}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ ga4_id|escapejs }}',{anonymize_ip:true});</script>{% endif %}
+</head>
+<body class="result-page" data-event-url="{% url 'diagnostic:evenement' %}" data-session-id="{{ r.session_id }}" data-feedback-url="{% url 'diagnostic:avis' r.public_id %}">
+  <form class="csrf-token" aria-hidden="true">{% csrf_token %}</form>
+  <header class="site-header compact"><a class="brand" href="/"><span class="brand-mark">C</span><span><b>Cefiis</b><small>Maison du Consultant</small></span></a><span class="header-note">Diagnostic confidentiel</span></header>
+
+  <main>
+    <section class="result-hero">
+      <div class="eyebrow success"><span>✓</span> Diagnostic terminé</div>
+      <h1>{{ r.prenom }}, voici ce que vos réponses révèlent.</h1>
+      <p>{{ titre }}</p>
+      <div class="result-meta">
+        <span><b>{{ domaine }}</b><small>Votre expertise</small></span>
+        <span><b>{{ r.score }}/4</b><small>Socle déjà défini</small></span>
+        <span><b>{{ phase }}</b><small>Votre phase</small></span>
+      </div>
+    </section>
+
+    <div class="result-grid">
+      <section class="result-card axes-card">
+        <div class="section-kicker">Votre socle de consultant</div>
+        <h2>Quatre éléments rendent une expertise achetable.</h2>
+        <div class="axes">
+          <div class="axis"><span class="{% if r.a_positionnement %}axis-ok{% else %}axis-todo{% endif %}">{% if r.a_positionnement %}✓{% else %}→{% endif %}</span><b>Positionnement</b><small>{% if r.a_positionnement %}Déjà défini{% else %}À construire{% endif %}</small></div>
+          <div class="axis"><span class="{% if r.a_offre %}axis-ok{% else %}axis-todo{% endif %}">{% if r.a_offre %}✓{% else %}→{% endif %}</span><b>Offre</b><small>{% if r.a_offre %}Déjà définie{% else %}À construire{% endif %}</small></div>
+          <div class="axis"><span class="{% if r.a_tarifs %}axis-ok{% else %}axis-todo{% endif %}">{% if r.a_tarifs %}✓{% else %}→{% endif %}</span><b>Tarifs</b><small>{% if r.a_tarifs %}Déjà définis{% else %}À construire{% endif %}</small></div>
+          <div class="axis"><span class="{% if r.a_prospection %}axis-ok{% else %}axis-todo{% endif %}">{% if r.a_prospection %}✓{% else %}→{% endif %}</span><b>Prospection</b><small>{% if r.a_prospection %}Déjà définie{% else %}À construire{% endif %}</small></div>
+        </div>
+      </section>
+      <section class="result-card insight-card">
+        <div class="section-kicker">Votre principal point de vigilance</div>
+        <h2>{{ contenu.titre }}</h2>
+        {% for paragraphe in contenu.paragraphes %}<p>{{ paragraphe }}</p>{% endfor %}
+        <div class="action-box"><span>À faire aujourd’hui</span><p>{{ contenu.action }}</p></div>
+      </section>
+    </div>
+
+    <section class="personalization-section">
+      <div class="personalization-head">
+        <div class="section-kicker">Une lecture fondée sur l’ensemble de vos réponses</div>
+        <h2>Ce que votre profil change dans la manière d’avancer.</h2>
+        <p>{{ intro }}</p>
+      </div>
+      <div class="personalization-grid">
+        <article class="personal-card">
+          <span>Votre profil</span>
+          <h3>{{ analyse.profil.titre }}</h3>
+          <p>{{ analyse.profil.texte }}</p>
+        </article>
+        <article class="personal-card">
+          <span>Signal du marché</span>
+          <h3>{{ analyse.signal.titre }}</h3>
+          <p>{{ analyse.signal.texte }}</p>
+        </article>
+        <article class="personal-card plan-card">
+          <span>Votre priorité sur 30 jours</span>
+          <ol>{% for action in analyse.plan %}<li>{{ action }}</li>{% endfor %}</ol>
+        </article>
+      </div>
+    </section>
+
+    <section class="ebook-offer">
+      <div class="ebook-visual" aria-hidden="true"><span class="book-tag">Guide pratique</span><strong>De l’Expert<br>au Consultant<br>Professionnel</strong><small>Cefiis · Maison du Consultant</small></div>
+      <div class="ebook-copy">
+        <div class="section-kicker light">Pour transformer le diagnostic en plan d’action</div>
+        <h2>Ne laissez pas votre prochaine opportunité arriver avant que votre offre soit prête.</h2>
+        <p>Le diagnostic vous montre où vous en êtes. L’ebook vous guide pour structurer les quatre éléments qui rendent votre expertise visible, vendable et rémunératrice.</p>
+        <ul><li>Clarifier votre positionnement</li><li>Construire une offre concrète</li><li>Fixer un prix justifiable</li><li>Organiser votre prospection</li></ul>
+        {% if temoignage %}<blockquote class="testimonial">« {{ temoignage }} »</blockquote>{% endif %}
+        {% if garantie_active and garantie_texte %}<div class="guarantee">✓ {{ garantie_texte }}</div>{% endif %}
+        <div class="price-line"><span><b>2 000</b> FCFA</span><small>Téléchargement immédiat après paiement</small></div>
+        <a class="primary-button light-button" href="{{ ebook_url }}" target="_blank" rel="noopener" data-track="ebook_click">Découvrir l’ebook <span>→</span></a>
+        <p class="microcopy">Paiement sécurisé · Lecture sur téléphone, tablette ou ordinateur</p>
+      </div>
+    </section>
+
+    <section class="community-card"><div><span class="voluntary">Accès volontaire</span><h2>{{ groupe_nom }}</h2><p>Un seul espace pour les experts qui ont terminé le diagnostic, qu’ils aient déjà acheté l’ebook ou non : échanges, ressources et prochaines rencontres.</p></div><a href="{{ groupe_url }}" target="_blank" rel="noopener" data-track="whatsapp_click" class="secondary-button">Rejoindre le groupe WhatsApp <span>↗</span></a></section>
+
+    <section class="feedback-card" id="feedback-card">
+      <div class="feedback-form">
+        <div class="section-kicker">Aidez-nous à améliorer cet outil</div>
+        <h2>Ce diagnostic vous a-t-il aidé à mieux vous situer&nbsp;?</h2>
+        <div class="rating" role="radiogroup" aria-label="Note sur 5">
+          {% for n in '12345' %}<button type="button" data-rating="{{ n }}" aria-label="{{ n }} sur 5">{{ n }}<small>{% if n == '1' %}Peu{% elif n == '5' %}Beaucoup{% endif %}</small></button>{% endfor %}
+        </div>
+        <label class="field-label" for="feedback">Un détail à améliorer ? <span>Facultatif</span></label>
+        <textarea id="feedback" rows="3" maxlength="1000" placeholder="Votre remarque en une phrase…"></textarea>
+        <div class="error" id="feedback-error" hidden></div>
+        <button class="primary-button narrow" type="button" id="feedback-submit" disabled>Envoyer mon avis</button>
+      </div>
+      <div class="thanks" hidden><span>✓</span><h2>Merci pour votre retour.</h2><p>Il nous aidera à rendre les prochains diagnostics plus simples et plus utiles.</p></div>
+    </section>
+  </main>
+  <footer>© 2026 Cefiis-IDH · Cotonou, Bénin · +229 01 97 34 52 32</footer>
+  <script src="{% static 'diagnostic/resultat.js' %}" defer></script>
+</body>
+</html>

@@ -11,3 +11,5 @@ __pycache__/
 .bash_history
 .gunicorn/
 .local/
+__pycache__/
+*.pyc
