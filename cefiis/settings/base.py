@@ -55,7 +55,7 @@ EBOOK_GUARANTEE_TEXT = (
 
 # Liens WhatsApp pour le diagnostic / ebook
 DIAGNOSTIC_WHATSAPP_GROUP_NAME = "De l'Expert au Consultant — Cefiis"
-DIAGNOSTIC_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/IJi96yhLhyYJjOPtWFKwtN"
+DIAGNOSTIC_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/ITVSPaYoUlPA6SNw4D7fau"
 
 
 MIDDLEWARE = [
