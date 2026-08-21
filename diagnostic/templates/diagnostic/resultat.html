@@ -5,7 +5,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Votre diagnostic — Maison du Consultant</title>
-  <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}">
+  <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}?v=20260821-3">
   {% if ga4_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id|urlencode }}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ ga4_id|escapejs }}',{anonymize_ip:true});</script>{% endif %}
 </head>
 <body class="result-page"
@@ -140,6 +140,6 @@
   </main>
   <footer>© 2026 Cefiis-IDH · Cotonou, Bénin · +229 01 97 34 52 32</footer>
   <script src="https://cdn.kkiapay.me/k.js" defer></script>
-  <script src="{% static 'diagnostic/resultat.js' %}" defer></script>
+  <script src="{% static 'diagnostic/resultat.js' %}?v=20260821-3" defer></script>
 </body>
 </html>

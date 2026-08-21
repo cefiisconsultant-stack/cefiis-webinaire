@@ -31,6 +31,7 @@ class DiagnosticReponseAdmin(admin.ModelAdmin):
         "contacte",
         "ebook_achete",
         "utm_source",
+        "utm_source_info",
         "utm_campaign",
         "utm_content",
         "device",
@@ -55,6 +56,7 @@ class DiagnosticReponseAdmin(admin.ModelAdmin):
         "utm_source",
         "utm_medium",
         "utm_campaign",
+        "utm_source_info",
         "utm_content",
         "utm_term",
         "gclid",
@@ -72,7 +74,7 @@ class DiagnosticReponseAdmin(admin.ModelAdmin):
         ("Qualité du formulaire", {"fields": ("note_formulaire", "commentaire_formulaire", "date_feedback")}),
         ("Consentements", {"fields": ("consentement_diagnostic", "consentement_marketing")}),
         ("Suivi commercial", {"fields": ("contacte", "ebook_achete", "notes")}),
-        ("Mesure", {"classes": ("collapse",), "fields": ("duree_secondes", "device", "landing_path", "referrer", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "public_id", "session_id", "date_creation")}),
+        ("Mesure", {"classes": ("collapse",), "fields": ("duree_secondes", "device", "landing_path", "referrer", "utm_source", "utm_medium", "utm_campaign", "utm_source_info", "utm_content", "utm_term", "gclid", "public_id", "session_id", "date_creation")}),
     )
 
     @admin.display(description="Difficulté")

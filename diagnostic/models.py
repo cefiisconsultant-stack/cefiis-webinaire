@@ -122,6 +122,12 @@ class DiagnosticReponse(models.Model):
     utm_source = models.CharField(max_length=50, blank=True, default="")
     utm_medium = models.CharField(max_length=50, blank=True, default="")
     utm_campaign = models.CharField(max_length=100, blank=True, default="")
+    utm_source_info = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        verbose_name="Audience / origine détaillée",
+    )
     gclid = models.CharField(max_length=255, blank=True, default="")
     utm_content = models.CharField(max_length=100, blank=True, default="")
     utm_term = models.CharField(max_length=100, blank=True, default="")
@@ -151,6 +157,10 @@ class DiagnosticReponse(models.Model):
         verbose_name_plural = "Réponses au diagnostic"
         indexes = [
             models.Index(fields=["utm_campaign", "date_creation"], name="diag_utm_date_idx"),
+            models.Index(
+                fields=["utm_source_info", "date_creation"],
+                name="diag_srcinfo_date_idx",
+            ),
             models.Index(fields=["segment", "date_creation"], name="diag_segment_date_idx"),
         ]
 

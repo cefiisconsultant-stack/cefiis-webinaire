@@ -54,6 +54,7 @@ class Command(BaseCommand):
             if event.nom == "view":
                 acquisition.setdefault(session, {
                     "source": event.meta.get("source") or "direct",
+                    "source_info": event.meta.get("source_info") or "sans-audience",
                     "campaign": event.meta.get("campaign") or "sans-campagne",
                     "content": event.meta.get("content") or "sans-variante",
                     "device": event.meta.get("device") or "inconnu",
@@ -74,6 +75,7 @@ class Command(BaseCommand):
         for reponse in reponses:
             acquisition[str(reponse.session_id)] = {
                 "source": reponse.utm_source or "direct",
+                "source_info": reponse.utm_source_info or "sans-audience",
                 "campaign": reponse.utm_campaign or "sans-campagne",
                 "content": reponse.utm_content or "sans-variante",
                 "device": reponse.device or "inconnu",
@@ -88,17 +90,25 @@ class Command(BaseCommand):
         sources = defaultdict(
             lambda: {"vues": set(), "demarrages": set(), "termines": set(), "achats": set()}
         )
+        audiences = defaultdict(
+            lambda: {"vues": set(), "demarrages": set(), "termines": set(), "achats": set()}
+        )
         all_sessions = vues | demarrages | termines | sessions_par_nom["purchase"]
         for session in all_sessions:
             key = acquisition.get(session, {}).get("source", "direct")
+            audience_key = acquisition.get(session, {}).get("source_info", "sans-audience")
             if session in vues:
                 sources[key]["vues"].add(session)
+                audiences[audience_key]["vues"].add(session)
             if session in demarrages:
                 sources[key]["demarrages"].add(session)
+                audiences[audience_key]["demarrages"].add(session)
             if session in termines:
                 sources[key]["termines"].add(session)
+                audiences[audience_key]["termines"].add(session)
             if session in sessions_par_nom["purchase"]:
                 sources[key]["achats"].add(session)
+                audiences[audience_key]["achats"].add(session)
 
         durees = [r.duree_secondes for r in reponses if r.duree_secondes is not None]
         notes = [r.note_formulaire for r in reponses if r.note_formulaire is not None]
@@ -150,6 +160,17 @@ class Command(BaseCommand):
                 "taux_completion": taux(len(valeurs["termines"]), len(valeurs["demarrages"])),
             })
 
+        audience_rows = []
+        for audience, valeurs in sorted(audiences.items()):
+            audience_rows.append({
+                "audience": audience,
+                "vues": len(valeurs["vues"]),
+                "demarrages": len(valeurs["demarrages"]),
+                "termines": len(valeurs["termines"]),
+                "achats": len(valeurs["achats"]),
+                "taux_completion": taux(len(valeurs["termines"]), len(valeurs["demarrages"])),
+            })
+
         segments = Counter(libelle(r.segment, DiagnosticReponse.SEGMENTS) for r in reponses)
         situations = Counter(libelle(r.situation, DiagnosticReponse.SITUATIONS) for r in reponses)
         optins = sum(1 for r in reponses if r.consentement_marketing)
@@ -158,6 +179,7 @@ class Command(BaseCommand):
             "funnel": funnel,
             "par_ecran": ecrans,
             "acquisition_par_source": acquisition_rows,
+            "acquisition_par_audience": audience_rows,
             "segments": dict(segments.most_common()),
             "situations": dict(situations.most_common()),
             "optin_marketing": {"nombre": optins, "taux": taux(optins, len(reponses))},
@@ -204,6 +226,14 @@ class Command(BaseCommand):
         for row in rapport["acquisition_par_source"]:
             self.stdout.write(
                 f"{row['source'][:22]:22} {row['vues']:5} {row['demarrages']:8} "
+                f"{row['termines']:6} {row['achats']:8}   {row['taux_completion']:.1f}%"
+            )
+
+        self.stdout.write("\n" + self.style.MIGRATE_HEADING("PAR AUDIENCE (UTM_SOURCE_INFO)"))
+        self.stdout.write("Audience               Vues   Starts   Fins   Achats   Complétion")
+        for row in rapport["acquisition_par_audience"]:
+            self.stdout.write(
+                f"{row['audience'][:22]:22} {row['vues']:5} {row['demarrages']:8} "
                 f"{row['termines']:6} {row['achats']:8}   {row['taux_completion']:.1f}%"
             )
 

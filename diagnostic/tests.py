@@ -32,8 +32,10 @@ class DiagnosticViewsTests(TestCase):
             "anciennete_consultant": "",
             "duree_secondes": 118,
             "utm_source": "whatsapp",
+            "utm_medium": "social",
             "utm_campaign": "lancement-aout",
-            "utm_content": "groupe-01-soir",
+            "utm_content": "affiche",
+            "utm_source_info": "groupe_consultants",
             "device": "mobile",
             "landing_path": "/diagnostic/",
             "consentement_diagnostic": True,
@@ -58,6 +60,8 @@ class DiagnosticViewsTests(TestCase):
         self.assertEqual(reponse.score, 2)
         self.assertEqual(reponse.segment, "structuration")
         self.assertTrue(reponse.consentement_marketing)
+        self.assertEqual(reponse.utm_medium, "social")
+        self.assertEqual(reponse.utm_source_info, "groupe_consultants")
         self.assertIn(str(reponse.public_id), response.json()["redirect"])
         self.assertEqual(DiagnosticEvenement.objects.filter(nom="complete").count(), 1)
 
@@ -109,10 +113,15 @@ class DiagnosticViewsTests(TestCase):
             "ecran": "domaine",
             "etape": 2,
             "utm_source": "whatsapp",
+            "utm_source_info": "groupe_consultants",
         }
         self.post_json(reverse("diagnostic:evenement"), event)
         self.post_json(reverse("diagnostic:evenement"), event)
         self.assertEqual(DiagnosticEvenement.objects.count(), 1)
+        self.assertEqual(
+            DiagnosticEvenement.objects.get().meta["source_info"],
+            "groupe_consultants",
+        )
 
     def test_checkout_intent_is_tracked_but_purchase_is_server_only(self):
         checkout = {
@@ -164,3 +173,7 @@ class DiagnosticViewsTests(TestCase):
         self.assertEqual(report["funnel"]["vues_uniques"], 1)
         self.assertEqual(report["funnel"]["termines"], 1)
         self.assertIn("Structuration", report["segments"])
+        self.assertEqual(
+            report["acquisition_par_audience"][0]["audience"],
+            "groupe_consultants",
+        )

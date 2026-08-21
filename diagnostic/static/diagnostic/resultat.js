@@ -82,6 +82,14 @@
   var widgetObserver = null;
   var slowLoadingTimer = null;
   var loadingFailureTimer = null;
+  var widgetReadyFallbackTimer = null;
+  var hideLoadingTimer = null;
+  var widgetFramesBeforeOpen = [];
+  var lifecycleListenersBound = false;
+  var widgetOpenCalled = false;
+  var widgetReady = false;
+  var paymentCompleting = false;
+  var kkiapayOrigin = "https://widget-v3.kkiapay.me";
 
   function openPaymentDialog() {
     if (dialog.open) {
@@ -105,28 +113,39 @@
   function showPaymentLoading() {
     clearTimeout(slowLoadingTimer);
     clearTimeout(loadingFailureTimer);
+    clearTimeout(widgetReadyFallbackTimer);
+    clearTimeout(hideLoadingTimer);
+    widgetReady = false;
+    paymentCompleting = false;
     paymentLoadingMessage.textContent = "Connexion à KKiaPay en cours…";
-    paymentLoading.classList.remove("is-leaving");
+    paymentLoading.classList.remove("is-leaving", "is-behind-widget", "is-verifying");
     paymentLoading.hidden = false;
+    paymentLoading.setAttribute("aria-busy", "true");
+    /* Le loader reste devant l'iframe tant que KKiaPay n'a pas confirmé que
+       son interface est initialisée. Il passera ensuite derrière le widget. */
+    document.body.appendChild(paymentLoading);
     document.documentElement.classList.add("payment-is-loading");
     slowLoadingTimer = setTimeout(function () {
       paymentLoadingMessage.textContent = "La connexion prend un peu plus de temps. Merci de patienter…";
-    }, 7000);
+    }, 6000);
     loadingFailureTimer = setTimeout(function () {
       showPaymentError("La fenêtre de paiement met trop de temps à s’ouvrir. Vérifiez votre connexion puis réessayez.");
-    }, 20000);
+    }, 30000);
   }
 
   function hidePaymentLoading() {
     clearTimeout(slowLoadingTimer);
     clearTimeout(loadingFailureTimer);
+    clearTimeout(widgetReadyFallbackTimer);
+    clearTimeout(hideLoadingTimer);
     if (paymentLoading.hidden) {
       return;
     }
     paymentLoading.classList.add("is-leaving");
-    setTimeout(function () {
+    hideLoadingTimer = setTimeout(function () {
       paymentLoading.hidden = true;
-      paymentLoading.classList.remove("is-leaving");
+      paymentLoading.removeAttribute("aria-busy");
+      paymentLoading.classList.remove("is-leaving", "is-behind-widget", "is-verifying");
       document.documentElement.classList.remove("payment-is-loading");
     }, 200);
   }
@@ -136,49 +155,130 @@
       widgetObserver.disconnect();
       widgetObserver = null;
     }
+    clearTimeout(widgetReadyFallbackTimer);
   }
 
-  function nodeContainsKkiapayWidget(node) {
-    if (!node || node.nodeType !== 1) {
-      return false;
+  function frameExistedBeforeOpening(frame) {
+    return widgetFramesBeforeOpen.indexOf(frame) !== -1;
+  }
+
+  function markKkiapayReady() {
+    if (paymentLoading.hidden || widgetReady || paymentCompleting) {
+      return;
     }
-    var element = node;
-    var signature = [
-      element.id || "",
-      typeof element.className === "string" ? element.className : "",
-      element.getAttribute("src") || "",
-      element.getAttribute("title") || ""
-    ].join(" ");
-    if (/kkiapay/i.test(signature)) {
+    widgetReady = true;
+    stopWatchingForWidget();
+    clearTimeout(slowLoadingTimer);
+    clearTimeout(loadingFailureTimer);
+    paymentLoadingMessage.textContent = "Paiement sécurisé en cours…";
+    /* L'animation continue, mais un niveau sous l'iframe KKiaPay : le
+       formulaire devient visible et cliquable sans écran vide intermédiaire. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        paymentLoading.classList.add("is-behind-widget");
+      });
+    });
+  }
+
+  function watchFrameLoad(frame) {
+    if (frame.dataset.cefiisKkiapayWatched === "true") {
+      return;
+    }
+    frame.dataset.cefiisKkiapayWatched = "true";
+    frame.addEventListener("load", function () {
+      /* Secours si une future version du SDK ne renvoie plus son signal
+         WIDGET_SUCCESSFULLY_INIT. Le délai laisse le temps au premier rendu. */
+      widgetReadyFallbackTimer = setTimeout(markKkiapayReady, 8000);
+    }, {once: true});
+  }
+
+  function scanForKkiapayFrame() {
+    var frames = Array.prototype.slice.call(document.querySelectorAll("iframe"));
+    for (var index = 0; index < frames.length; index += 1) {
+      var frame = frames[index];
+      var src = frame.getAttribute("src") || "";
+      if (frameExistedBeforeOpening(frame) || !/kkiapay\.me/i.test(src)) {
+        continue;
+      }
+      watchFrameLoad(frame);
       return true;
     }
-    return Boolean(element.querySelector('iframe[src*="kkiapay" i], [id*="kkiapay" i], [class*="kkiapay" i]'));
+    return false;
+  }
+
+  function keepLoaderAboveKkiapay() {
+    if (!paymentLoading.hidden && !widgetReady && document.body.lastElementChild !== paymentLoading) {
+      document.body.appendChild(paymentLoading);
+    }
   }
 
   function watchForKkiapayWidget() {
     stopWatchingForWidget();
-    widgetObserver = new MutationObserver(function (mutations) {
-      var widgetFound = mutations.some(function (mutation) {
-        return Array.prototype.some.call(mutation.addedNodes, nodeContainsKkiapayWidget);
-      });
-      if (widgetFound) {
-        stopWatchingForWidget();
-        hidePaymentLoading();
-        paymentButton.disabled = false;
-        paymentButton.textContent = "Continuer vers le paiement sécurisé — " + price.toLocaleString("fr-FR") + " FCFA";
-      }
+    widgetObserver = new MutationObserver(function () {
+      scanForKkiapayFrame();
+      requestAnimationFrame(keepLoaderAboveKkiapay);
     });
-    widgetObserver.observe(document.body, {childList: true, subtree: true});
+    widgetObserver.observe(document.body, {
+      childList: true,
+      subtree: false
+    });
+    scanForKkiapayFrame();
+  }
+
+  function resetPaymentButton() {
+    paymentButton.disabled = false;
+    paymentButton.textContent = "Continuer vers le paiement sécurisé — " + price.toLocaleString("fr-FR") + " FCFA";
+  }
+
+  function closeKkiapayWidgetSilently() {
+    if (typeof window.closeKkiapayWidget === "function") {
+      try {
+        window.closeKkiapayWidget();
+      } catch (error) {}
+    }
+  }
+
+  function handleKkiapayClose() {
+    widgetOpenCalled = false;
+    widgetReady = false;
+    stopWatchingForWidget();
+    if (paymentCompleting) {
+      return;
+    }
+    hidePaymentLoading();
+    resetPaymentButton();
+    paymentError.hidden = true;
+    openPaymentDialog();
+  }
+
+  function bindKkiapayLifecycleListeners() {
+    if (lifecycleListenersBound) {
+      return;
+    }
+    lifecycleListenersBound = true;
+    if (typeof window.addKkiapayCloseListener === "function") {
+      window.addKkiapayCloseListener(handleKkiapayClose);
+    }
+    if (typeof window.addPaymentAbortedListener === "function") {
+      window.addPaymentAbortedListener(function () {
+        paymentCompleting = false;
+        closeKkiapayWidgetSilently();
+        showPaymentError("Le paiement a été interrompu. Vous pouvez vérifier vos informations puis réessayer.");
+      });
+    }
   }
 
   function showPaymentError(message) {
+    widgetOpenCalled = false;
+    widgetReady = false;
+    paymentCompleting = false;
     stopWatchingForWidget();
+    closeKkiapayWidgetSilently();
     hidePaymentLoading();
     openPaymentDialog();
     paymentError.textContent = message;
     paymentError.hidden = false;
-    paymentButton.disabled = false;
-    paymentButton.textContent = "Continuer vers le paiement sécurisé — " + price.toLocaleString("fr-FR") + " FCFA";
+    resetPaymentButton();
   }
 
   buyButton.addEventListener("click", function () {
@@ -212,11 +312,14 @@
     paymentButton.disabled = true;
     paymentButton.textContent = "Ouverture du paiement…";
     closePaymentDialog();
+    widgetFramesBeforeOpen = Array.prototype.slice.call(document.querySelectorAll("iframe"));
     showPaymentLoading();
     watchForKkiapayWidget();
+    bindKkiapayLifecycleListeners();
     requestAnimationFrame(function () {
       setTimeout(function () {
         try {
+          widgetOpenCalled = true;
           window.openKkiapayWidget({
             amount: price,
             key: body.dataset.kkiapayKey,
@@ -233,6 +336,7 @@
             })
           });
         } catch (error) {
+          widgetOpenCalled = false;
           showPaymentError("La fenêtre de paiement n’a pas pu s’ouvrir. Vérifiez votre connexion puis réessayez.");
         }
       }, 50);
@@ -241,8 +345,18 @@
 
   if (typeof window.addKkiapayListener === "function") {
     window.addKkiapayListener("success", function (response) {
+      paymentCompleting = true;
       stopWatchingForWidget();
-      hidePaymentLoading();
+      clearTimeout(slowLoadingTimer);
+      clearTimeout(loadingFailureTimer);
+      clearTimeout(widgetReadyFallbackTimer);
+      paymentLoading.classList.remove("is-behind-widget", "is-leaving");
+      paymentLoading.classList.add("is-verifying");
+      paymentLoading.hidden = false;
+      paymentLoading.setAttribute("aria-busy", "true");
+      paymentLoadingMessage.textContent = "Paiement reçu. Vérification sécurisée en cours…";
+      document.body.appendChild(paymentLoading);
+      closeKkiapayWidgetSilently();
       var transactionId = response && response.transactionId;
       if (!transactionId) {
         showPaymentError("Le paiement semble terminé, mais sa référence est absente. Ne repayez pas et contactez-nous.");
@@ -275,7 +389,22 @@
     });
 
     window.addKkiapayListener("failed", function () {
+      paymentCompleting = false;
       showPaymentError("Le paiement a échoué ou a été annulé. Vous pouvez vérifier vos informations puis réessayer.");
     });
   }
+
+  /* Le SDK actuel émet ce message lorsque l'interface interne a réellement
+     terminé son initialisation. Il est plus précis que le simple load de
+     l'iframe, particulièrement lors d'une première visite sans cache. */
+  window.addEventListener("message", function (event) {
+    if (
+      event.origin === kkiapayOrigin &&
+      event.data &&
+      event.data.name === "WIDGET_SUCCESSFULLY_INIT" &&
+      widgetOpenCalled
+    ) {
+      markKkiapayReady();
+    }
+  });
 })();
