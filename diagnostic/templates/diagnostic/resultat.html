@@ -8,7 +8,15 @@
   <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}">
   {% if ga4_id %}<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id|urlencode }}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ ga4_id|escapejs }}',{anonymize_ip:true});</script>{% endif %}
 </head>
-<body class="result-page" data-event-url="{% url 'diagnostic:evenement' %}" data-session-id="{{ r.session_id }}" data-feedback-url="{% url 'diagnostic:avis' r.public_id %}">
+<body class="result-page"
+      data-event-url="{% url 'diagnostic:evenement' %}"
+      data-session-id="{{ r.session_id }}"
+      data-feedback-url="{% url 'diagnostic:avis' r.public_id %}"
+      data-payment-url="{% url 'verifier_paiement' %}"
+      data-ebook-price="{{ ebook_price }}"
+      data-kkiapay-key="{{ kkiapay_public_key }}"
+      data-kkiapay-sandbox="{{ kkiapay_sandbox|yesno:'true,false' }}"
+      data-diagnostic-id="{{ r.public_id }}">
   <form class="csrf-token" aria-hidden="true">{% csrf_token %}</form>
   <header class="site-header compact"><a class="brand" href="/"><span class="brand-mark">C</span><span><b>Cefiis</b><small>Maison du Consultant</small></span></a><span class="header-note">Diagnostic confidentiel</span></header>
 
@@ -76,11 +84,42 @@
         <ul><li>Clarifier votre positionnement</li><li>Construire une offre concrète</li><li>Fixer un prix justifiable</li><li>Organiser votre prospection</li></ul>
         {% if temoignage %}<blockquote class="testimonial">« {{ temoignage }} »</blockquote>{% endif %}
         {% if garantie_active and garantie_texte %}<div class="guarantee">✓ {{ garantie_texte }}</div>{% endif %}
-        <div class="price-line"><span><b>2 000</b> FCFA</span><small>Téléchargement immédiat après paiement</small></div>
-        <a class="primary-button light-button" href="{{ ebook_url }}" target="_blank" rel="noopener" data-track="ebook_click">Découvrir l’ebook <span>→</span></a>
+        <div class="price-line"><span><b>{{ ebook_price|floatformat:"0" }}</b> FCFA</span><small>Téléchargement immédiat après paiement</small></div>
+        <button class="primary-button light-button" type="button" id="ebook-buy-button">Acheter et télécharger l’ebook <span>→</span></button>
         <p class="microcopy">Paiement sécurisé · Lecture sur téléphone, tablette ou ordinateur</p>
       </div>
     </section>
+
+    <dialog class="payment-dialog" id="payment-dialog" aria-labelledby="payment-title">
+      <button class="dialog-close" type="button" aria-label="Fermer la fenêtre de paiement">×</button>
+      <div class="section-kicker">Paiement guidé et sécurisé</div>
+      <h2 id="payment-title">Comment se déroulera le paiement&nbsp;?</h2>
+      <p class="payment-intro">Vos informations sont déjà préremplies. Vérifiez-les, puis choisissez Mobile Money ou carte dans la fenêtre sécurisée KKiaPay.</p>
+      <div class="payment-methods">
+        <div class="payment-method"><span>01</span><div><b>Avec Mobile Money</b><p>Choisissez votre réseau, puis confirmez la demande reçue sur votre téléphone. Ne communiquez jamais votre code secret.</p></div></div>
+        <div class="payment-method"><span>02</span><div><b>Avec une carte</b><p>Saisissez les informations de la carte uniquement dans la fenêtre sécurisée KKiaPay.</p></div></div>
+      </div>
+      <form id="payment-form">
+        <div class="payment-fields">
+          <label>Prénom<input type="text" id="payment-name" value="{{ r.prenom }}" maxlength="100" autocomplete="given-name" required></label>
+          <label>Email<input type="email" id="payment-email" value="{{ r.email }}" maxlength="254" autocomplete="email" placeholder="vous@exemple.com" required></label>
+        </div>
+        <label>Numéro à utiliser pour Mobile Money<input type="tel" id="payment-phone" value="{{ r.whatsapp }}" maxlength="24" autocomplete="tel" inputmode="tel" required></label>
+        <div class="error" id="payment-error" role="alert" hidden></div>
+        <button class="primary-button payment-submit" type="submit" id="payment-submit">Continuer vers le paiement sécurisé — {{ ebook_price|floatformat:"0" }} FCFA</button>
+      </form>
+      <p class="payment-reassurance">Après confirmation, vous serez automatiquement redirigé vers le téléchargement de l’ebook. Une copie sera aussi envoyée par email.</p>
+    </dialog>
+
+    <div class="payment-loading" id="payment-loading" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <div class="payment-loading-card">
+        <div class="payment-spinner" aria-hidden="true"><span></span></div>
+        <h2>Ouverture du paiement sécurisé</h2>
+        <p id="payment-loading-message">Connexion à KKiaPay en cours…</p>
+        <div class="payment-loading-line" aria-hidden="true"><span></span></div>
+        <small>Ne fermez pas cette page.</small>
+      </div>
+    </div>
 
     {% comment %} <section class="community-card"><div><span class="voluntary">Accès volontaire</span><h2>{{ groupe_nom }}</h2><p>Un seul espace pour les experts qui ont terminé le diagnostic, qu’ils aient déjà acheté l’ebook ou non : échanges, ressources et prochaines rencontres.</p></div><a href="{{ groupe_url }}" target="_blank" rel="noopener" data-track="whatsapp_click" class="secondary-button">Rejoindre le groupe WhatsApp <span>↗</span></a></section> {% endcomment %}
 
@@ -100,6 +139,7 @@
     </section>
   </main>
   <footer>© 2026 Cefiis-IDH · Cotonou, Bénin · +229 01 97 34 52 32</footer>
+  <script src="https://cdn.kkiapay.me/k.js" defer></script>
   <script src="{% static 'diagnostic/resultat.js' %}" defer></script>
 </body>
 </html>

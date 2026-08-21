@@ -13,6 +13,8 @@ from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
 
+from ebook.constants import PRIX_EBOOK
+
 from .contenus import contenu_pour
 from .countries import INDICATIFS, PAYS_AFRIQUE_FRANCOPHONE
 from .models import DiagnosticEvenement, DiagnosticReponse
@@ -86,6 +88,9 @@ def _config():
     return {
         "ga4_id": getattr(settings, "GA4_MEASUREMENT_ID", ""),
         "ebook_url": getattr(settings, "DIAGNOSTIC_EBOOK_URL", "/ebook/"),
+        "ebook_price": PRIX_EBOOK,
+        "kkiapay_public_key": settings.KKIAPAY_PUBLIC_KEY,
+        "kkiapay_sandbox": settings.KKIAPAY_SANDBOX,
         "groupe_url": getattr(
             settings,
             "DIAGNOSTIC_WHATSAPP_GROUP_URL",
@@ -284,8 +289,6 @@ def evenement(request):
         nom = _text(data, "nom", 32)
         autorises = _choice_values(DiagnosticEvenement.EVENEMENTS) - {
             "complete",
-            "checkout_view",
-            "payment_started",
             "purchase",
         }
         if nom not in autorises:
@@ -314,6 +317,7 @@ def evenement(request):
             "difficulte",
             "contact",
             "resultat",
+            "checkout",
             "merci",
         }
         if ecran not in ecrans_autorises:
@@ -347,6 +351,8 @@ def evenement(request):
             "abandon",
             "result_view",
             "ebook_click",
+            "checkout_view",
+            "payment_started",
             "whatsapp_click",
         }
         if nom in uniques:

@@ -2,11 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <title>Merci — Votre ebook est prêt</title>
 <style>
   body{ font-family:'Inter',sans-serif; background:#16233A; color:#F7F3E9; min-height:100vh;
-        display:flex; align-items:center; justify-content:center; text-align:center; margin:0; padding:24px; }
-  .box{ max-width:620px; }
+        display:flex; align-items:center; justify-content:center; text-align:center; margin:0; padding:24px; box-sizing:border-box; }
+  .box{ width:100%; max-width:620px; }
   h1{ font-family:'Fraunces',serif; font-size:28px; margin-bottom:16px; }
   p{ color:#B9C2D0; margin:0 0 28px; line-height:1.6; }
   a.btn{ display:inline-block; background:#B08D57; color:#1B140A; padding:16px 32px; border-radius:3px; text-decoration:none; font-weight:700; }
@@ -15,21 +17,36 @@
   .community h2{ font-family:'Fraunces',serif; font-size:22px; margin:10px 0; }
   .community p{ margin-bottom:20px; }
   a.secondary{ color:#F7F3E9; text-underline-offset:4px; font-weight:700; }
+  .assistance{ margin-top:28px; font-size:14px; }
+  .assistance a{ color:#E7C993; text-underline-offset:3px; }
 </style>
 </head>
 <body>
   <div class="box">
-    <h1>Merci {{ achat.prenom }} 🎉</h1>
-    <p>Votre paiement a été confirmé. Votre ebook est prêt — vous en recevrez aussi une copie par email à {{ achat.email }}.</p>
-    <a class="btn" href="{% url 'telecharger_ebook' achat.token_telechargement %}">Télécharger mon ebook</a>
-    <section class="community">
-      <small>Accès volontaire</small>
-      <h2>{{ groupe_nom }}</h2>
-      <p>Retrouvez les experts ayant terminé le diagnostic dans un espace unique d’échanges et de ressources.</p>
-      <a id="whatsapp-group" class="secondary" href="{{ groupe_url }}" target="_blank" rel="noopener">Rejoindre le groupe WhatsApp ↗</a>
-    </section>
+    {% if achat and telechargement_disponible %}
+      <h1>Merci {{ achat.prenom }} 🎉</h1>
+      <p>Votre paiement a été confirmé. Votre ebook est prêt — vous en recevrez aussi une copie par email à {{ achat.email }}.</p>
+      <a class="btn" href="{% url 'telecharger_ebook' achat.token_telechargement %}">Télécharger mon ebook</a>
+    {% else %}
+      <h1>Ce lien n’est plus disponible.</h1>
+      <p>Si vous avez acheté l’ebook, contactez-nous avec l’adresse utilisée lors du paiement. Nous vérifierons votre accès sans vous demander de payer une seconde fois.</p>
+      <a class="btn" href="mailto:{{ support_email }}">Contacter l’assistance</a>
+    {% endif %}
+
+    {% if achat and telechargement_disponible and groupe_url %}
+      <section class="community">
+        <small>Accès volontaire</small>
+        <h2>{{ groupe_nom }}</h2>
+        <p>Retrouvez des experts, des consultants et des entrepreneurs ayant terminé le diagnostic, dans un espace unique d’échanges et de ressources.</p>
+        <a id="whatsapp-group" class="secondary" href="{{ groupe_url }}" target="_blank" rel="noopener">Rejoindre le groupe WhatsApp ↗</a>
+      </section>
+    {% endif %}
+
+    {% if achat and telechargement_disponible %}
+      <p class="assistance">Si le téléchargement ne démarre pas, écrivez à <a href="mailto:{{ support_email }}">{{ support_email }}</a> sans effectuer un nouveau paiement.</p>
+    {% endif %}
   </div>
-  {% if achat.diagnostic_session_id %}
+  {% if achat and telechargement_disponible and achat.diagnostic_session_id and groupe_url %}
   <script>
     document.getElementById('whatsapp-group').addEventListener('click', function () {
       const payload = JSON.stringify({

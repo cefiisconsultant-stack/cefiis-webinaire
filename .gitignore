@@ -12,3 +12,4 @@ __pycache__/
 .local/
 __pycache__/
 *.pyc
+private/

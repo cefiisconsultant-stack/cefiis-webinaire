@@ -1,5 +1,6 @@
 from pathlib import Path
-import os
+
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -9,10 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4ra#!+0@c-6gn^mg_szh3-y%fa^1r43qq67ww2ib@(imkowjp='
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-local-development-only-change-me",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -37,7 +41,6 @@ INSTALLED_APPS = [
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
 
-from decouple import config
 KKIAPAY_PUBLIC_KEY = config('KKIAPAY_PUBLIC_KEY')
 INSCRIPTIONS_WEBINAIRE_OUVERTES = config('INSCRIPTIONS_WEBINAIRE_OUVERTES', default=True, cast=bool)
 WEBINAIRE_DATE_ISO = config('WEBINAIRE_DATE_ISO', default='2026-08-01T16:00:00')
@@ -47,6 +50,29 @@ KKIAPAY_SECRET_KEY = config('KKIAPAY_SECRET_KEY')
 KKIAPAY_SANDBOX = config('KKIAPAY_SANDBOX', default=True, cast=bool)
 
 # Réglages ebook
+SITE_URL = config("SITE_URL", default="http://127.0.0.1:8000").rstrip("/")
+EBOOK_PRICE = config("EBOOK_PRICE", default=2000, cast=int)
+EBOOK_DOWNLOAD_MAX = config("EBOOK_DOWNLOAD_MAX", default=3, cast=int)
+EBOOK_DOWNLOAD_EXPIRY_HOURS = config(
+    "EBOOK_DOWNLOAD_EXPIRY_HOURS",
+    default=72,
+    cast=int,
+)
+EBOOK_FILE_PATH = Path(
+    config(
+        "EBOOK_FILE_PATH",
+        default=str(
+            BASE_DIR
+            / "private"
+            / "ebook"
+            / "De_l_Expert_au_Consultant_Professionnel.pdf"
+        ),
+    )
+)
+EBOOK_SUPPORT_EMAIL = config(
+    "EBOOK_SUPPORT_EMAIL",
+    default="etiennegbedagbe@cefiis.com",
+)
 EBOOK_GUARANTEE_ENABLED = False
 EBOOK_GUARANTEE_TEXT = (
     "Garantie satisfait ou remboursé pendant 7 jours. "
@@ -54,8 +80,14 @@ EBOOK_GUARANTEE_TEXT = (
 )
 
 # Liens WhatsApp pour le diagnostic / ebook
-DIAGNOSTIC_WHATSAPP_GROUP_NAME = "De l'Expert au Consultant — Cefiis"
-DIAGNOSTIC_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/ITVSPaYoUlPA6SNw4D7fau"
+DIAGNOSTIC_WHATSAPP_GROUP_NAME = config(
+    "DIAGNOSTIC_WHATSAPP_GROUP_NAME",
+    default="De l'Expert au Consultant — Cefiis",
+)
+DIAGNOSTIC_WHATSAPP_GROUP_URL = config(
+    "DIAGNOSTIC_WHATSAPP_GROUP_URL",
+    default="",
+)
 
 
 MIDDLEWARE = [
@@ -122,26 +154,20 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'cefiis.consultant@gmail.com'
-# EMAIL_HOST_PASSWORD = 'vaun hmdj ckbw jcsi'
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.hostinger.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-
-EMAIL_HOST_USER = 'etiennegbedagbe@cefiis.com'
-# Collez ici le mot de passe d'application généré sur votre écran précédent
-EMAIL_HOST_PASSWORD = 'e5mo-o3dx-jsnq-7jds' 
-DEFAULT_FROM_EMAIL = 'etiennegbedagbe@cefiis.com'
-SERVER_EMAIL = 'etiennegbedagbe@cefiis.com'
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.smtp.EmailBackend",
+)
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.hostinger.com")
+EMAIL_PORT = config("EMAIL_PORT", default=465, cast=int)
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", default=True, cast=bool)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=False, cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = config(
+    "DEFAULT_FROM_EMAIL",
+    default=EMAIL_HOST_USER or "etiennegbedagbe@cefiis.com",
+)
+SERVER_EMAIL = config("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 
  

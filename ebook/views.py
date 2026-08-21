@@ -2,6 +2,7 @@ import json
 import logging
 import re
 import uuid
+from datetime import timedelta
 from pathlib import Path
 
 import requests
@@ -9,26 +10,80 @@ from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
+from django.core.signing import salted_hmac
 from django.core.validators import validate_email
-from django.http import FileResponse, Http404, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.db import transaction
+from django.http import FileResponse, JsonResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
-from .models import EbookAchat
+from .models import EbookAchat, EbookTelechargementEvenement
 
 
 logger = logging.getLogger(__name__)
-PRIX_EBOOK = 2_000
 KKIAPAY_STATUS_URL = (
     "https://api-sandbox.kkiapay.me/api/v1/transactions/status"
     if settings.KKIAPAY_SANDBOX
     else "https://api.kkiapay.me/api/v1/transactions/status"
 )
+
+
+def _ebook_price():
+    return max(1, int(getattr(settings, "EBOOK_PRICE", 2_000)))
+
+
+def _download_limit():
+    return max(1, int(getattr(settings, "EBOOK_DOWNLOAD_MAX", 3)))
+
+
+def _download_expiry_delta():
+    hours = max(1, int(getattr(settings, "EBOOK_DOWNLOAD_EXPIRY_HOURS", 72)))
+    return timedelta(hours=hours)
+
+
+def _download_fingerprint(request):
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    ip_address = forwarded.split(",", 1)[0].strip() or request.META.get(
+        "REMOTE_ADDR", ""
+    )
+    if not ip_address:
+        return ""
+    return salted_hmac(
+        "ebook.download.ip",
+        ip_address,
+        algorithm="sha256",
+    ).hexdigest()
+
+
+def _record_download_event(request, achat, resultat):
+    EbookTelechargementEvenement.objects.create(
+        achat=achat,
+        resultat=resultat,
+        compteur_apres=achat.nombre_telechargements,
+        empreinte_ip=_download_fingerprint(request),
+        user_agent=request.META.get("HTTP_USER_AGENT", "")[:255],
+    )
+
+
+def _unavailable_download_page(request, *, achat=None, status=410):
+    return render(
+        request,
+        "ebook/merci.html",
+        {
+            "achat": achat,
+            "telechargement_disponible": False,
+            "support_email": settings.EBOOK_SUPPORT_EMAIL,
+            "groupe_url": settings.DIAGNOSTIC_WHATSAPP_GROUP_URL,
+            "groupe_nom": settings.DIAGNOSTIC_WHATSAPP_GROUP_NAME,
+            "tracking_url": reverse("diagnostic:evenement"),
+        },
+        status=status,
+    )
 
 
 def _optional_uuid(value):
@@ -78,7 +133,7 @@ def vente_ebook(request):
         request,
         "ebook/vente_ebook.html",
         {
-            "prix": PRIX_EBOOK,
+            "prix": _ebook_price(),
             "kkiapay_public_key": settings.KKIAPAY_PUBLIC_KEY,
             "kkiapay_sandbox": settings.KKIAPAY_SANDBOX,
             "guarantee_enabled": settings.EBOOK_GUARANTEE_ENABLED,
@@ -144,20 +199,37 @@ def verifier_paiement(request):
         if not isinstance(result, dict):
             raise TypeError("Réponse KKiaPay invalide")
 
+        prix_attendu = _ebook_price()
         try:
             montant_confirme = int(result.get("amount", 0))
         except (TypeError, ValueError):
             montant_confirme = 0
+        statut_confirme = str(result.get("status", "")).strip().upper()
+        logger.info(
+            "Vérification KKiaPay transaction=…%s statut=%s montant=%s attendu=%s sandbox=%s",
+            transaction_id[-8:],
+            statut_confirme or "ABSENT",
+            montant_confirme,
+            prix_attendu,
+            settings.KKIAPAY_SANDBOX,
+        )
         paiement_valide = (
-            result.get("status") == "SUCCESS" and montant_confirme == PRIX_EBOOK
+            statut_confirme == "SUCCESS" and montant_confirme == prix_attendu
         )
         if not paiement_valide:
+            logger.warning(
+                "Paiement KKiaPay non confirmé transaction=…%s statut=%s montant=%s attendu=%s",
+                transaction_id[-8:],
+                statut_confirme or "ABSENT",
+                montant_confirme,
+                prix_attendu,
+            )
             EbookAchat.objects.update_or_create(
                 transaction_id=transaction_id,
                 defaults={
                     "email": email,
                     "prenom": prenom,
-                    "montant": montant_confirme or PRIX_EBOOK,
+                    "montant": montant_confirme or prix_attendu,
                     "statut": "echec",
                     "diagnostic": diagnostic,
                     "diagnostic_session_id": diagnostic_session,
@@ -171,18 +243,42 @@ def verifier_paiement(request):
                 status=400,
             )
 
-        achat, _ = EbookAchat.objects.update_or_create(
-            transaction_id=transaction_id,
-            defaults={
-                "email": email,
-                "prenom": prenom,
-                "montant": PRIX_EBOOK,
-                "statut": "paye",
-                "date_paiement": timezone.now(),
-                "diagnostic": diagnostic,
-                "diagnostic_session_id": diagnostic_session,
-            },
-        )
+        payment_time = timezone.now()
+        with transaction.atomic():
+            achat, created = EbookAchat.objects.select_for_update().get_or_create(
+                transaction_id=transaction_id,
+                defaults={
+                    "email": email,
+                    "prenom": prenom,
+                    "montant": prix_attendu,
+                    "statut": "paye",
+                    "date_paiement": payment_time,
+                    "expiration_telechargement": (
+                        payment_time + _download_expiry_delta()
+                    ),
+                    "diagnostic": diagnostic,
+                    "diagnostic_session_id": diagnostic_session,
+                },
+            )
+            was_already_paid = not created and achat.statut == "paye"
+            achat.email = email
+            achat.prenom = prenom
+            achat.montant = prix_attendu
+            achat.statut = "paye"
+            achat.diagnostic = diagnostic
+            achat.diagnostic_session_id = diagnostic_session
+            if not was_already_paid:
+                achat.date_paiement = payment_time
+                achat.expiration_telechargement = (
+                    payment_time + _download_expiry_delta()
+                )
+                achat.nombre_telechargements = 0
+                achat.dernier_telechargement_at = None
+            elif achat.expiration_telechargement is None:
+                achat.expiration_telechargement = (
+                    payment_time + _download_expiry_delta()
+                )
+            achat.save()
         if not achat.email_envoye:
             try:
                 envoyer_ebook_par_email(achat, request=request)
@@ -270,14 +366,28 @@ def envoyer_ebook_par_email(achat, request=None):
 
 
 def page_merci(request, token):
-    achat = get_object_or_404(
-        EbookAchat, token_telechargement=token, statut="paye"
+    achat = EbookAchat.objects.filter(
+        token_telechargement=token,
+        statut="paye",
+    ).first()
+    if achat is None:
+        return _unavailable_download_page(request, status=404)
+
+    if achat.expiration_telechargement is None:
+        achat.expiration_telechargement = timezone.now() + _download_expiry_delta()
+        achat.save(update_fields=["expiration_telechargement"])
+
+    telechargement_disponible = (
+        achat.expiration_telechargement > timezone.now()
+        and achat.nombre_telechargements < _download_limit()
     )
     return render(
         request,
         "ebook/merci.html",
         {
             "achat": achat,
+            "telechargement_disponible": telechargement_disponible,
+            "support_email": settings.EBOOK_SUPPORT_EMAIL,
             "groupe_url": settings.DIAGNOSTIC_WHATSAPP_GROUP_URL,
             "groupe_nom": settings.DIAGNOSTIC_WHATSAPP_GROUP_NAME,
             "tracking_url": reverse("diagnostic:evenement"),
@@ -285,17 +395,65 @@ def page_merci(request, token):
     )
 
 
+@require_GET
 def telecharger_ebook(request, token):
-    get_object_or_404(EbookAchat, token_telechargement=token, statut="paye")
-    chemin = (
-        Path(settings.MEDIA_ROOT)
-        / "ebook"
-        / "De_l_Expert_au_Consultant_Professionnel.pdf"
-    )
-    if not chemin.is_file():
-        raise Http404("Fichier introuvable.")
-    return FileResponse(
+    chemin = Path(settings.EBOOK_FILE_PATH)
+
+    with transaction.atomic():
+        achat = EbookAchat.objects.select_for_update().filter(
+            token_telechargement=token,
+            statut="paye",
+        ).first()
+        if achat is None:
+            return _unavailable_download_page(request, status=404)
+
+        now = timezone.now()
+        if achat.expiration_telechargement is None:
+            achat.expiration_telechargement = now + _download_expiry_delta()
+            achat.save(update_fields=["expiration_telechargement"])
+
+        if now >= achat.expiration_telechargement:
+            _record_download_event(
+                request,
+                achat,
+                EbookTelechargementEvenement.Resultat.EXPIRE,
+            )
+            return _unavailable_download_page(request, achat=achat)
+
+        if achat.nombre_telechargements >= _download_limit():
+            _record_download_event(
+                request,
+                achat,
+                EbookTelechargementEvenement.Resultat.LIMITE,
+            )
+            return _unavailable_download_page(request, achat=achat)
+
+        if not chemin.is_file():
+            _record_download_event(
+                request,
+                achat,
+                EbookTelechargementEvenement.Resultat.FICHIER_ABSENT,
+            )
+            logger.error("PDF ebook absent du chemin configuré : %s", chemin)
+            return _unavailable_download_page(request, achat=achat, status=503)
+
+        achat.nombre_telechargements += 1
+        achat.dernier_telechargement_at = now
+        achat.save(
+            update_fields=["nombre_telechargements", "dernier_telechargement_at"]
+        )
+        _record_download_event(
+            request,
+            achat,
+            EbookTelechargementEvenement.Resultat.AUTORISE,
+        )
+
+    response = FileResponse(
         chemin.open("rb"),
         as_attachment=True,
         filename="De_l_Expert_au_Consultant_Professionnel.pdf",
     )
+    response["Cache-Control"] = "private, no-store, max-age=0"
+    response["Pragma"] = "no-cache"
+    response["X-Robots-Tag"] = "noindex, nofollow, noarchive"
+    return response

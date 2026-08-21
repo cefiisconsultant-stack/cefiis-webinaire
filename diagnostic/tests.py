@@ -47,6 +47,8 @@ class DiagnosticViewsTests(TestCase):
         response = self.client.get(reverse("diagnostic:quiz"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Votre expérience peut-elle devenir")
+        self.assertContains(response, "télécharger votre ebook à la fin du diagnostic")
+        self.assertNotContains(response, "Voir le contenu de l’ebook")
 
     def test_valid_submission_creates_private_result_url(self):
         response = self.post_json(reverse("diagnostic:enregistrer"), self.payload)
@@ -112,6 +114,25 @@ class DiagnosticViewsTests(TestCase):
         self.post_json(reverse("diagnostic:evenement"), event)
         self.assertEqual(DiagnosticEvenement.objects.count(), 1)
 
+    def test_checkout_intent_is_tracked_but_purchase_is_server_only(self):
+        checkout = {
+            "session_id": str(self.session_id),
+            "nom": "checkout_view",
+            "ecran": "checkout",
+        }
+        first = self.post_json(reverse("diagnostic:evenement"), checkout)
+        second = self.post_json(reverse("diagnostic:evenement"), checkout)
+        purchase = self.post_json(
+            reverse("diagnostic:evenement"),
+            {**checkout, "nom": "purchase"},
+        )
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(purchase.status_code, 400)
+        self.assertEqual(
+            DiagnosticEvenement.objects.filter(nom="checkout_view").count(), 1
+        )
+
     def test_telemetry_refuses_explicit_cross_origin_posts(self):
         response = self.client.post(
             reverse("diagnostic:evenement"),
@@ -127,7 +148,10 @@ class DiagnosticViewsTests(TestCase):
         response = self.client.get(reverse("diagnostic:resultat", args=[reponse.public_id]))
         self.assertContains(response, "Expert salarié en transition progressive")
         self.assertContains(response, "Le marché vous envoie déjà un signal fort")
-        self.assertContains(response, f"diagnostic={reponse.public_id}")
+        self.assertContains(response, f'data-diagnostic-id="{reponse.public_id}"')
+        self.assertContains(response, "Acheter et télécharger l’ebook")
+        self.assertContains(response, reverse("verifier_paiement"))
+        self.assertNotContains(response, "Rejoindre le groupe WhatsApp")
 
     def test_report_is_unique_and_machine_readable(self):
         self.post_json(reverse("diagnostic:enregistrer"), self.payload)
