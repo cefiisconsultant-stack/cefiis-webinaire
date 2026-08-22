@@ -89,6 +89,14 @@ DIAGNOSTIC_WHATSAPP_GROUP_URL = config(
     default="",
 )
 
+# Google Tag Manager
+
+GTM_ENABLED = config("GTM_ENABLED", default=False, cast=bool)
+
+GTM_CONTAINER_ID = config(
+    "GTM_CONTAINER_ID",
+    default="",
+).strip()
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,6 +106,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'cefiis.middleware.GoogleTagManagerMiddleware',
 ]
 
 ROOT_URLCONF = 'cefiis.urls'

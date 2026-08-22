@@ -7,10 +7,6 @@
   <title>Diagnostic Consultant — Maison du Consultant</title>
   <meta name="description" content="En 2 minutes, découvrez comment transformer votre expertise en activité de conseil.">
   <link rel="stylesheet" href="{% static 'diagnostic/diagnostic.css' %}">
-  {% if ga4_id %}
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id|urlencode }}"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ ga4_id|escapejs }}',{anonymize_ip:true});</script>
-  {% endif %}
 </head>
 <body class="quiz-page"
       data-submit-url="{% url 'diagnostic:enregistrer' %}"
